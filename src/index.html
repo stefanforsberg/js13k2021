@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Space something</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #898989;
+            overflow: auto;
+            font-size: 2vh;
+            touch-action: manipulation;
+            font-family: Arial;
+            
+        }
+
+        canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: linear-gradient(black, #110043);
+        }
+
+        .overlay {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: solid 1px white; box-sizing: border-box; display: none
+        }
+
+        h2 {
+            margin: 0;
+            padding: 0;
+            color: white;
+            font-size: 4vw;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="canvas"></canvas>
+
+    <div class="overlay" id="menu" style="width: 80%; height: 75%; background-color: #000000dd; padding: 15px;">
+        <h2><span style="color: grey">System</span> X9213-3223</h2>
+    </div>
+            
+
+    <script src="js/index.js" type="module"></script>
+
+</body>
+</html>
