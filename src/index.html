@@ -10,9 +10,10 @@
             padding: 0;
             background-color: #898989;
             overflow: auto;
-            font-size: 2vh;
+            font-size: 2vw;
             touch-action: manipulation;
             font-family: Arial;
+            color: white;
             
         }
 
@@ -34,6 +35,15 @@
             font-size: 4vw;
             font-family: Arial, Helvetica, sans-serif;
         }
+
+        .powerup {
+            border: solid 1px #ffffffaa; filter: grayscale(100%); text-align: center; padding: 1vw 0;background: #343434;
+        }
+
+        .powerup.active {
+            background-color: #989898;
+            filter: none;
+        }
     </style>
 </head>
 
@@ -41,8 +51,23 @@
 
     <canvas id="canvas"></canvas>
 
-    <div class="overlay" id="menu" style="width: 80%; height: 75%; background-color: #000000dd; padding: 15px;">
+    <div class="overlay" id="menu" style="width: 80%; height: 75%; background-color: #000000dd; padding: 15px; ">
         <h2><span style="color: grey">System</span> X9213-3223</h2>
+
+        <div style="display: grid; grid-template-columns: repeat(15, 1fr); grid-template-rows: repeat(5, 1fr); grid-column-gap: 1vw; grid-row-gap: 1vw;">
+            <div class="powerup">
+                🚀
+            </div>
+
+            <div class="powerup active">
+                🚀
+            </div>
+
+            <div class="powerup">
+                💨
+            </div>
+            
+        </div>
     </div>
             
 

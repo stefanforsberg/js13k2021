@@ -25,7 +25,7 @@ export default class Camera {
     }
 
     end() {
-        this.context.restore();
+        this.context.restore(); 
     }
 
     applyScale() {
@@ -71,6 +71,10 @@ export default class Camera {
         obj.x = (x - this.viewport.left) * (this.viewport.scale[0]);
         obj.y = (y - this.viewport.top) * (this.viewport.scale[1]);
         return obj;
+    }
+
+    outsideViewport(x,y) {
+        return (x<this.viewport.left || x>this.viewport.right || y<this.viewport.top || y>this.viewport.bottom);
     }
 };
 

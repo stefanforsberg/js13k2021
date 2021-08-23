@@ -20,6 +20,19 @@ export default class Vector {
     this.y*=y;
   }
 
+  scaleRound(s, delta) {
+    this.x*=s;
+    this.y*=s;
+
+    if(Math.abs(this.x) < delta) {
+      this.x = 0;
+    }
+
+    if(Math.abs(this.y) < delta) {
+      this.y = 0;
+    }
+  }
+
   divide(scalar) {
     this.x = this.x/scalar;
     this.y = this.y/scalar;

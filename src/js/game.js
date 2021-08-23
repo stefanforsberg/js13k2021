@@ -3,6 +3,7 @@ import Camera from "./camera"
 import Enemy from "./enemy"
 import Menu from "./menu"
 import Collision from "./collision";
+import World from "./world";
 
 export default class Game {
     constructor() {
@@ -37,15 +38,17 @@ export default class Game {
 
         this.running = true;
 
-        for(var i = 0; i < 100; i++) {
-            this.enemies.push(new Enemy(this));
-        }
+        this.debug = true;
 
-        Array.prototype.revFor = function(cb) {
-            for (let i = this.length - 1; i >= 0; i--) {
-                cb(this[i]);
-            }
-        }
+        // for(var i = 0; i < 100; i++) {
+        //     this.enemies.push(new Enemy(this));
+        // }
+
+        this.world = new World(this);
+
+        this.camera.zoomTo(1000)
+
+        
 
 
         window.requestAnimationFrame(() => this.draw());
@@ -53,10 +56,12 @@ export default class Game {
 
     onresize() {
 
+        console.log("resize")
+
         if(!this.canvas) return;
     
-        const screenWidth = this.canvas.clientWidth ?? 800;
-        const screenHeight = this.canvas.clientHeight ?? 600;
+        const screenWidth = this.canvas.clientWidth;
+        const screenHeight = this.canvas.clientHeight;
     
         this.canvas.width = screenWidth; 
         this.canvas.height = screenHeight;
@@ -80,8 +85,13 @@ export default class Game {
             this.enemies = this.enemies.filter((e) => !e.removeable);
     
             this.context.clearRect(0, 0, canvas.width, canvas.height);
+
+            this.world.update();
     
             this.camera.begin();
+
+            this.world.draw();
+
             this.ship.draw();
     
             this.enemies.revFor((e) => e.draw());
