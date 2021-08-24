@@ -38,7 +38,7 @@ export default class Ship extends GameObject {
         this.gun = new Gun(game);
         this.width = 30;
         this.height = 20;
-        this.maxVelMagnitude = 6;
+        this.maxVelMagnitude = 8;
         this.particles = [];
 
 
@@ -76,7 +76,6 @@ export default class Ship extends GameObject {
 
         if(this.up) {
             this.vel.add(Math.cos(this.angle),Math.sin(this.angle))
-
 
             if(this.vel.magnitude() > this.maxVelMagnitude) {
                 this.vel.scaleRound(0.8, 0.1);

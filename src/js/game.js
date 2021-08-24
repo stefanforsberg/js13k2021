@@ -45,11 +45,12 @@ export default class Game {
         // }
 
         this.world = new World(this);
+        this.world.generateNew();
 
-        this.camera.zoomTo(1000)
+        this.ship.pos.x = this.world.startPos.x;
+        this.ship.pos.y = this.world.startPos.y;
 
-        
-
+        this.camera.zoomTo(1200)
 
         window.requestAnimationFrame(() => this.draw());
     }
@@ -81,6 +82,9 @@ export default class Game {
 
             this.collision.update();
 
+            this.particles.forEach((p) => p.update());
+
+            this.particles = this.particles.filter((b) => !b.removeable);
             this.bullets = this.bullets.filter((b) => !b.removeable);
             this.enemies = this.enemies.filter((e) => !e.removeable);
     
@@ -99,6 +103,8 @@ export default class Game {
             this.bullets.forEach((b) => {
                 b.draw();
             });
+
+            this.particles.forEach((p) => p.draw());
             
             this.camera.end();
         }
