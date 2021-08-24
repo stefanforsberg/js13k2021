@@ -28,11 +28,9 @@ export default class Game {
 
         this.collision = new Collision(this);
 
-        this.bullets = [];
-        this.enemies = [];
-        this.particles = [];
+        
 
-        this.ship = new Ship(this);
+        
 
         this.menu = new Menu();
 
@@ -45,12 +43,9 @@ export default class Game {
         // }
 
         this.world = new World(this);
-        this.world.generateNew();
+        
 
-        this.ship.pos.x = this.world.startPos.x;
-        this.ship.pos.y = this.world.startPos.y;
-
-        this.camera.zoomTo(1200)
+        this.startLevel();
 
         window.requestAnimationFrame(() => this.draw());
     }
@@ -66,6 +61,24 @@ export default class Game {
     
         this.canvas.width = screenWidth; 
         this.canvas.height = screenHeight;
+    }
+
+    startLevel() {
+        this.running = false;
+        this.ship = new Ship(this);
+        
+        this.bullets = [];
+        this.enemies = [];
+        this.particles = [];
+
+        this.world.generateNew();
+
+        this.ship.pos.x = this.world.startPos.x;
+        this.ship.pos.y = this.world.startPos.y;
+
+        this.camera.zoomTo(1200);
+
+        this.running = true;
     }
 
     draw() {

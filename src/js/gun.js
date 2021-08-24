@@ -33,17 +33,8 @@ export default class Gun extends GameObject {
         fireVector.normalize()
 
         const x = new Vector(10*Math.cos(ship.angle),10*Math.sin(ship.angle));
-        const x2 = new Vector(10*Math.cos(ship.angle-Math.PI/8),10*Math.sin(ship.angle-Math.PI/8));
-        const x3 = new Vector(10*Math.cos(ship.angle+Math.PI/8),10*Math.sin(ship.angle+Math.PI/8));
 
-        // x.add(ship.vel.x, ship.vel.y)
-
-        // console.log(x)
-        // x.scale(2,2);
-        
         this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y),x))
-        this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y),x2))
-        this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y),x3))
     }
 
     update() {

@@ -17,11 +17,17 @@
             
         }
 
-        canvas {
+        #canvasBg {
             position: absolute;
             width: 100%;
             height: 100%;
             background-image: linear-gradient(black, #110043);
+        }
+
+        #canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
         }
 
         .overlay {
@@ -49,6 +55,7 @@
 
 <body>
 
+    <canvas id="canvasBg"></canvas>
     <canvas id="canvas"></canvas>
 
     <div class="overlay" id="menu" style="width: 80%; height: 75%; background-color: #000000dd; padding: 15px; ">

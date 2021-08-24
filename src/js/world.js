@@ -144,8 +144,13 @@ export default class World {
     constructor(game) {
         this.game = game;
         
+        this.bgCanvas = document.getElementById("canvasBg")
+        this.bgContext = this.bgCanvas.getContext("2d");
         this.worldCanvas = document.createElement('canvas');
         this.context = this.worldCanvas.getContext("2d");
+
+        this.bgCanvas.width = this.game.canvas.width;
+        this.bgCanvas.height = this.game.canvas.height;
 
     }
 
@@ -169,11 +174,12 @@ export default class World {
             for(let y = 0; y < this.currentMap[x].length; y++) {
                 if(this.currentMap[x][y]) {
 
+                    let colorShade = Math.random()*20 | 0;
+
                     if(this.currentMap[x][y] === 2) {
-                        this.context.fillStyle = `rgba(255,255,255,1)`;
+                        this.context.fillStyle = `rgba(${(r-100)},${(g-100)},${(b-100)})`;
                         this.context.fillRect(x*100,y*100,100,100);
                     } else if(this.currentMap[x][y] === 1) {
-                        let colorShade = Math.random()*20 | 0;
                         this.context.fillStyle = `rgba(${(r-colorShade)},${(g-colorShade)},${(b-colorShade)})`;
                         this.context.fillRect(x*100,y*100,100,100);
                     }
@@ -184,6 +190,37 @@ export default class World {
         }
 
         this.startPos = possibleStart[Math.floor(Math.random()*possibleStart.length)];
+        this.starColors = ["255,255,255", "57,190,255", "170, 172, 217", "255,255,0"]
+
+
+        this.bgContext.clearRect(0,0, this.bgCanvas.width,this.bgCanvas.height);
+
+        for(let i = 0; i < 150; i++) {
+
+            this.bgContext.save();
+            this.bgContext.translate(this.bgCanvas.width/2, this.bgCanvas.height/2)
+            this.bgContext.rotate(Math.PI*Math.random());
+
+            this.bgContext.fillStyle = `rgba(${this.starColors.random()},${Math.random()})`;
+            this.bgContext.fillRect(Math.random()*this.bgCanvas.width | 0,Math.random()*this.bgCanvas.height | 0, 1+Math.random(), 1+Math.random());
+
+            this.bgContext.font = `${8+Math.random()*200 | 0}px Arial`;
+
+            if(Math.random() > 0.95) {
+                this.bgContext.fillStyle = `rgba(255,255,255,${0.15*Math.random()})`;
+                this.bgContext.fillText("🌌", Math.random()*this.bgCanvas.width | 0, Math.random()*this.bgCanvas.height)
+            }
+
+            if(Math.random() > 0.9) {
+                this.bgContext.fillStyle = `rgba(255,255,255,${0.1*Math.random()})`;
+                this.bgContext.fillText("🌑", Math.random()*this.bgCanvas.width | 0, Math.random()*this.bgCanvas.height)
+            }
+
+            this.bgContext.restore();
+aw           
+        }
+
+        
     }
 d
     update() {
@@ -223,6 +260,10 @@ d
         const hit = this.currentMap[x][y];
 
         if(hit) {
+
+            if(hit === 2) {
+                this.game.startLevel();
+            }
 
             const dy = (s.pos.y - (y*100 + 50));
             const dx = (s.pos.x - (x*100 + 50));
