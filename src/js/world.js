@@ -7,8 +7,8 @@ const Generator = {
     deathLimit: 3,
     birthLimit: 4,
     numberOfSteps: 10,
-    worldWidth: 60,
-    worldHeight: 30,
+    worldWidth: 10,
+    worldHeight: 10,
 
     generateMap: function() {
         var map = [[]];
@@ -154,6 +154,10 @@ export default class World {
 
     }
 
+    getEmptyPos() {
+        return this.emptyPositions.random();
+    }
+
     generateNew() {
         this.currentMap = Generator.generateMap();
         
@@ -162,7 +166,9 @@ export default class World {
 
         this.context.clearRect(0,0, this.worldCanvas.width,this.worldCanvas.height);
         
-        const possibleStart = []
+        this.emptyPositions = [];
+
+        this.tileWidth = 100;
 
         const r = (100+Math.random()*100)| 0;
         const g = (100+Math.random()*100)| 0;
@@ -184,14 +190,20 @@ export default class World {
                         this.context.fillRect(x*100,y*100,100,100);
                     }
                 } else {
-                    possibleStart.push({x: x*100+50, y: y*100+50})
+                    this.emptyPositions.push({x: x*100+50, y: y*100+50})
                 }
             }
         }
 
-        this.startPos = possibleStart[Math.floor(Math.random()*possibleStart.length)];
+        this.startPos = this.emptyPositions.random();
         this.starColors = ["255,255,255", "57,190,255", "170, 172, 217", "255,255,0"]
 
+        this.bgCanvas.style.backgroundImage = `linear-gradient(black, rgba(${Math.random()*40 | 0},${Math.random()*40 | 0},${Math.random()*40 | 0},1))`;
+
+        console.log(this.bgCanvas.style.backgroundImage)
+
+        this.width = this.currentMap.length*this.tileWidth;
+        this.height = this.currentMap[0].length*this.tileWidth;
 
         this.bgContext.clearRect(0,0, this.bgCanvas.width,this.bgCanvas.height);
 
@@ -217,21 +229,28 @@ export default class World {
             }
 
             this.bgContext.restore();
-aw           
         }
 
         
     }
-d
+
     update() {
         
+    }
+
+    getCurrent(x, y) {
+        try {
+            return this.currentMap[x][y];
+        } catch(e) {
+            return 0;
+        }
     }
 
     collides(b) {
         const x = Math.floor(b.pos.x/ 100);
         const y = Math.floor(b.pos.y/ 100);
 
-        const hit = this.currentMap[x][y];
+        const hit = this.getCurrent(x, y);
 
         if(hit) {
             if(this.currentMap[x][y] === 2) {
@@ -257,12 +276,16 @@ d
         const x = Math.floor(s.pos.x/ 100);
         const y = Math.floor(s.pos.y/ 100);
 
-        const hit = this.currentMap[x][y];
+        const hit = this.getCurrent(x, y);
+
+        
 
         if(hit) {
 
+            this.shipCollidesPos = x + "," + y;
+
             if(hit === 2) {
-                this.game.startLevel();
+                this.game.queueRestart = true;
             }
 
             const dy = (s.pos.y - (y*100 + 50));

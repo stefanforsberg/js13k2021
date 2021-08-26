@@ -1,6 +1,6 @@
 import Ship from "./ship"
 import Camera from "./camera"
-import Enemy from "./enemy"
+import * as Enemy from "./enemy"
 import Menu from "./menu"
 import Collision from "./collision";
 import World from "./world";
@@ -38,16 +38,12 @@ export default class Game {
 
         this.debug = true;
 
-        // for(var i = 0; i < 100; i++) {
-        //     this.enemies.push(new Enemy(this));
-        // }
-
         this.world = new World(this);
         
 
         this.startLevel();
 
-        window.requestAnimationFrame(() => this.draw());
+        
     }
 
     onresize() {
@@ -64,25 +60,44 @@ export default class Game {
     }
 
     startLevel() {
+        console.log("starting level")
         this.running = false;
+        this.queueRestart = false;
         this.ship = new Ship(this);
         
         this.bullets = [];
+        this.enemyBullets = [];
         this.enemies = [];
         this.particles = [];
 
         this.world.generateNew();
 
+
+        for(var i = 0; i < 10; i++) {
+            let pos = this.world.getEmptyPos();
+            this.enemies.push(new Enemy.StationaryEnemy(this, pos.x, pos.y));
+        }
+
+
         this.ship.pos.x = this.world.startPos.x;
         this.ship.pos.y = this.world.startPos.y;
 
-        this.camera.zoomTo(1200);
+        this.camera.setWorldSize(this.world.width, this.world.height)
+
+        this.camera.zoomTo(1200 + (this.canvas.width-1200) );
 
         this.running = true;
+
+        window.requestAnimationFrame(() => this.draw());
     }
 
     draw() {
 
+        if(this.queueRestart) {
+            console.log("queue restart")
+            this.startLevel();
+            return;
+        }
 
         if(this.running) {
             this.ship.update();
@@ -90,6 +105,10 @@ export default class Game {
             this.camera.moveTo(this.ship.pos.x,this.ship.pos.y); 
     
             this.bullets.forEach((b) => {
+                b.update();
+            });
+
+            this.enemyBullets.forEach((b) => {
                 b.update();
             });
 
@@ -114,6 +133,10 @@ export default class Game {
             this.enemies.revFor((e) => e.draw());
 
             this.bullets.forEach((b) => {
+                b.draw();
+            });
+
+            this.enemyBullets.forEach((b) => {
                 b.draw();
             });
 

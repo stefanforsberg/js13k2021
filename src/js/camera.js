@@ -54,9 +54,38 @@ export default class Camera {
     }
 
     moveTo(x, y) {
+
+        if(this.viewport.worldWidth < this.viewport.width) {
+            x = this.viewport.worldWidth / 2;
+        } else {
+            if(x < this.viewport.width/2 ) {
+                x = this.viewport.width/2;
+            } else if(x > (this.viewport.worldWidth - this.viewport.width/2)) {
+                x = (this.viewport.worldWidth - this.viewport.width/2)
+            }
+        }
+
+        if(this.viewport.worldHeight < this.viewport.height) {
+            y = this.viewport.worldHeight / 2;
+        } else {
+            if(y < this.viewport.height/2 ) {
+                y = this.viewport.height/2;
+            } else if(y > (this.viewport.worldHeight - this.viewport.height/2)) {
+                y = (this.viewport.worldHeight - this.viewport.height/2)
+            }
+        }
+
         this.lookAt[0] = x;
         this.lookAt[1] = y;
         this.updateViewport();
+    }
+
+    setWorldSize(worldWidth, worldHeight) {
+        this.viewport.worldWidth = worldWidth;
+        this.viewport.worldHeight = worldHeight;
+        this.updateViewport();
+        
+        
     }
 
     screenToWorld(x, y, obj) {

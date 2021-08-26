@@ -77,16 +77,18 @@ export default class Ship extends GameObject {
         if(this.up) {
             this.vel.add(Math.cos(this.angle),Math.sin(this.angle))
 
-            if(this.vel.magnitude() > this.maxVelMagnitude) {
-                this.vel.scaleRound(0.8, 0.1);
-            };
+
             
             this.particles.push(new Particle(this.game, new Vector(this.pos.x, this.pos.y), new Vector(-this.vel.x, -this.vel.y)));
         }
 
         this.game.world.collidesShip(this);
 
-w
+        if(this.vel.magnitude() > this.maxVelMagnitude) {
+            this.vel.normalize();
+            this.vel.scaleRound(this.maxVelMagnitude, 0)
+        };
+
         if(this.shooting) {
             this.gun.fire(this);
         }

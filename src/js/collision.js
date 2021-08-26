@@ -8,7 +8,6 @@ export default class Collision {
     update() {
         this.game.bullets.revFor((b) => {
             if(this.game.world.collides(b)) {
-                console.log("hit")
                 b.hit();
 
             }
