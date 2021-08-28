@@ -7,8 +7,8 @@ const Generator = {
     deathLimit: 3,
     birthLimit: 4,
     numberOfSteps: 10,
-    worldWidth: 10,
-    worldHeight: 10,
+    worldWidth: 40,
+    worldHeight: 20,
 
     generateMap: function() {
         var map = [[]];
@@ -51,7 +51,11 @@ const Generator = {
             for(var y = 0; y < map[0].length; y++) {
 
                 if(x === 0 || y === 0 || x === map.length-1 || y === map[0].length-1) {
-                    newMap[x][y] = 2;
+                    if(Math.random()> 0.9) {
+                        newMap[x][y] = 3;
+                    } else {
+                        newMap[x][y] = 2;
+                    }
                 } else {
                     var nbs = this.countAliveNeighbours(map, x, y);
                     if(map[x][y] > 0) {
@@ -168,7 +172,7 @@ export default class World {
         
         this.emptyPositions = [];
 
-        this.tileWidth = 100;
+        this.tileWidth = 50;
 
         const r = (100+Math.random()*100)| 0;
         const g = (100+Math.random()*100)| 0;
@@ -183,14 +187,14 @@ export default class World {
                     let colorShade = Math.random()*20 | 0;
 
                     if(this.currentMap[x][y] === 2) {
-                        this.context.fillStyle = `rgba(${(r-100)},${(g-100)},${(b-100)})`;
-                        this.context.fillRect(x*100,y*100,100,100);
+                        this.context.fillStyle = `rgba(${(r-70)},${(g-70)},${(b-70)}, 0.3)`;
+                        this.context.fillRect(x*this.tileWidth,y*this.tileWidth,this.tileWidth,this.tileWidth);
                     } else if(this.currentMap[x][y] === 1) {
                         this.context.fillStyle = `rgba(${(r-colorShade)},${(g-colorShade)},${(b-colorShade)})`;
-                        this.context.fillRect(x*100,y*100,100,100);
+                        this.context.fillRect(x*this.tileWidth,y*this.tileWidth,this.tileWidth,this.tileWidth);
                     }
                 } else {
-                    this.emptyPositions.push({x: x*100+50, y: y*100+50})
+                    this.emptyPositions.push({x: x*this.tileWidth+(this.tileWidth/2), y: y*this.tileWidth+(this.tileWidth/2)})
                 }
             }
         }
@@ -235,7 +239,7 @@ export default class World {
     }
 
     update() {
-        
+        this.bgCanvas.style.filter = `blur(${Math.abs(this.game.ship.vel.x) | 0}px)`;
     }
 
     getCurrent(x, y) {
@@ -247,20 +251,20 @@ export default class World {
     }
 
     collides(b) {
-        const x = Math.floor(b.pos.x/ 100);
-        const y = Math.floor(b.pos.y/ 100);
+        const x = Math.floor(b.pos.x/ this.tileWidth);
+        const y = Math.floor(b.pos.y/ this.tileWidth);
 
         const hit = this.getCurrent(x, y);
 
         if(hit) {
             if(this.currentMap[x][y] === 2) {
-                b.removeable = true;
+                b.removeable = true;  
                 return false;
             }
 
             if(this.currentMap[x][y] === 1) {
                 this.currentMap[x][y] = 0;
-                this.context.clearRect(x*100,y* 100,100,100);
+                this.context.clearRect(x*this.tileWidth,y* this.tileWidth,this.tileWidth,this.tileWidth);
 
                 for(let i = 0; i < 10; i++) {
                     this.game.particles.push(new WorldParticle(this.game, new Vector(b.pos.x, b.pos.y), this.baseColor));
@@ -273,8 +277,12 @@ export default class World {
     }
 
     collidesShip(s) {
-        const x = Math.floor(s.pos.x/ 100);
-        const y = Math.floor(s.pos.y/ 100);
+
+        const nextX = s.pos.x + 2*s.vel.x;
+        const nextY = s.pos.y + 2*s.vel.y;
+
+        const x = Math.floor(nextX/ this.tileWidth);
+        const y = Math.floor(nextY/ this.tileWidth);
 
         const hit = this.getCurrent(x, y);
 
@@ -284,12 +292,14 @@ export default class World {
 
             this.shipCollidesPos = x + "," + y;
 
-            if(hit === 2) {
+            if(hit === 3) {
                 this.game.queueRestart = true;
+                return false;
+                
             }
 
-            const dy = (s.pos.y - (y*100 + 50));
-            const dx = (s.pos.x - (x*100 + 50));
+            const dy = (s.pos.y - (y*this.tileWidth + this.tileWidth/2));
+            const dx = (s.pos.x - (x*this.tileWidth + this.tileWidth/2));
 
             if(Math.abs(dx) > Math.abs(dy)) {
                 s.vel.x = 3*-s.vel.x;

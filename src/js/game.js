@@ -4,6 +4,8 @@ import * as Enemy from "./enemy"
 import Menu from "./menu"
 import Collision from "./collision";
 import World from "./world";
+import CPlayer from "./music/player_small";
+import {song} from "./music/song";
 
 export default class Game {
     constructor() {
@@ -41,8 +43,34 @@ export default class Game {
         this.world = new World(this);
         
 
+        this.player = new CPlayer();
+        this.mainSong = this.player.init(song);
+
+        
+        this.loader();
+        
+    }
+
+    loader() {
+        
         this.startLevel();
 
+        // const done = this.player.generate() >= 1;
+
+
+        // if(!done) {
+            
+        //     setTimeout(() => this.loader(), 1000);
+        // } else {
+
+        //     var wave = this.player.createWave();
+        //     var audio = document.createElement("audio");
+        //     audio.src = URL.createObjectURL(new Blob([wave], {type: "audio/wav"}));
+        //     audio.play();
+        //     audio.loop = true;
+
+        //     this.startLevel();
+        // }
         
     }
 
@@ -118,6 +146,7 @@ export default class Game {
 
             this.particles = this.particles.filter((b) => !b.removeable);
             this.bullets = this.bullets.filter((b) => !b.removeable);
+            this.enemyBullets = this.enemyBullets.filter((e) => !e.removeable);
             this.enemies = this.enemies.filter((e) => !e.removeable);
     
             this.context.clearRect(0, 0, canvas.width, canvas.height);

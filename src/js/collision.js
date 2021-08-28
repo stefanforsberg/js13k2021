@@ -1,3 +1,4 @@
+import Bullet from "./bullet";
 import Vector from "./vector";
 
 export default class Collision {
@@ -8,8 +9,14 @@ export default class Collision {
     update() {
         this.game.bullets.revFor((b) => {
             if(this.game.world.collides(b)) {
-                b.hit();
+                
+                this.game.bullets.push(new Bullet(this.game,new Vector(b.pos.x, b.pos.x), new Vector(-1+2*Math.random(),-1+2*Math.random())))
+                this.game.bullets.push(new Bullet(this.game,new Vector(b.pos.x, b.pos.x), new Vector(-1+2*Math.random(),-1+2*Math.random())))
 
+                this.game.bullets.push(new Bullet(this.game,new Vector(b.pos.x, b.pos.x), new Vector(-1+2*Math.random(),-1+2*Math.random())))
+
+                b.hit();
+                console.log("asdasd")
             }
 
 
@@ -19,6 +26,12 @@ export default class Collision {
                     e.hit();
                 }
             })
+        });
+
+        this.game.enemyBullets.revFor((b) => {
+            if(this.game.world.collides(b)) {
+                b.hit();
+            }
         });
     }
 

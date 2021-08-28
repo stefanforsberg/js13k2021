@@ -24,13 +24,13 @@ class StationaryEnemy extends Enemy {
         this.width = 15;
         this.height = 15;
         this.radius = 15;
-        this.coolDown = 2000;
+        this.coolDown = 2000 + (Math.random()*5000 | 0);
         this.canFire = true;
     }
 
     update() {
         
-        if(this.canFire) {
+        if(this.canFire && Math.random() > 0.98) {
             this.canFire = false;
             setTimeout(() => this.canFire = true, this.coolDown);
 

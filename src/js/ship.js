@@ -19,6 +19,10 @@ class Particle extends GameObject {
         this.vel.scale(0.2,0.2);
         this.alpha -= 0.03;
         this.pos.add(this.vel.x,this.vel.y);
+
+        if(this.width < 0 || this.height < 0 || this.alpha < 0) {
+            this.removeable = true;
+        }
     }
 
     draw() {
@@ -38,10 +42,7 @@ export default class Ship extends GameObject {
         this.gun = new Gun(game);
         this.width = 30;
         this.height = 20;
-        this.maxVelMagnitude = 8;
-        this.particles = [];
-
-
+        this.maxVelMagnitude = 4;
     }
 
     handleKey(code, pressed) {
@@ -79,7 +80,7 @@ export default class Ship extends GameObject {
 
 
             
-            this.particles.push(new Particle(this.game, new Vector(this.pos.x, this.pos.y), new Vector(-this.vel.x, -this.vel.y)));
+            this.game.particles.push(new Particle(this.game, new Vector(this.pos.x, this.pos.y), new Vector(-this.vel.x, -this.vel.y)));
         }
 
         this.game.world.collidesShip(this);
@@ -97,7 +98,7 @@ export default class Ship extends GameObject {
 
         this.pos.add(this.vel.x,this.vel.y);
 
-        this.particles.forEach((p) => p.update());
+        this.game.particles.forEach((p) => p.update());
 
         this.gun.update();
 
@@ -123,8 +124,6 @@ export default class Ship extends GameObject {
         this.game.context.stroke();
         this.game.context.restore();
         
-        this.particles.forEach((p) => p.draw());
-
         this.gun.draw(this.pos);
     }
 }
