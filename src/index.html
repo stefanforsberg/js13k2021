@@ -29,6 +29,10 @@
             height: 100%;
         }
 
+        #hud {
+            position: absolute; top: 3%; left: 50%; transform: translate(-50%, 0%); border: solid 1px white; box-sizing: border-box; width: 80%
+        }
+
         .overlay {
             position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: solid 1px white; box-sizing: border-box; display: none
         }
@@ -56,6 +60,17 @@
 
     <canvas id="canvasBg"></canvas>
     <canvas id="canvas"></canvas>
+
+    <div id="hud" >^^ </div>
+
+    <div class="overlay" id="world" style="text-align: center; width: 80%; height: 75%; background-color: #000000dd; padding: 15px; display: block">
+        <h2 id="worldname"></h2>
+
+        <div id="worldlist">
+            
+        </div>
+            
+    </div>
 
     <div class="overlay" id="menu" style="width: 80%; height: 75%; background-color: #000000dd; padding: 15px; ">
         <h2><span style="color: grey">System</span> X9213-3223</h2>

@@ -120,7 +120,9 @@ class WorldParticle extends GameObject {
     constructor(game, pos, color) {
         super(game);
         this.pos = pos;
-        this.vel = new Vector(-1+2*Math.random(), -1+2*Math.random())
+        this.vel = new Vector(-1+2*Math.random(),-1+2*Math.random());
+        this.vel.normalize();
+        this.vel.scale(0.1, 0.1 );
         this.width = Math.round(Math.random()*75);
         this.height = Math.round(Math.random()*75);
         this.alpha = 1;
@@ -173,6 +175,16 @@ export default class World {
         this.emptyPositions = [];
 
         this.tileWidth = 50;
+
+        this.context.font = (this.tileWidth/2 | 0) + "px Arial";
+
+        const textMeasure = this.context.measureText("🌓")
+
+        this.textMeasure = {
+            width: textMeasure.width / 2,
+            height: (textMeasure.actualBoundingBoxAscent + textMeasure.actualBoundingBoxDescent) / 2 
+        };
+        console.log(this.textMeasure);
 
         const r = (100+Math.random()*100)| 0;
         const g = (100+Math.random()*100)| 0;
@@ -257,23 +269,71 @@ export default class World {
         const hit = this.getCurrent(x, y);
 
         if(hit) {
-            if(this.currentMap[x][y] === 2) {
+
+            if(this.currentMap[x][y] === 4) {
+                return false;
+            }
+
+            if(this.currentMap[x][y] === 2 || this.currentMap[x][y] === 3) {
                 b.removeable = true;  
                 return false;
             }
 
             if(this.currentMap[x][y] === 1) {
-                this.currentMap[x][y] = 0;
-                this.context.clearRect(x*this.tileWidth,y* this.tileWidth,this.tileWidth,this.tileWidth);
+                this.clearTile(x,y);
 
-                for(let i = 0; i < 10; i++) {
-                    this.game.particles.push(new WorldParticle(this.game, new Vector(b.pos.x, b.pos.y), this.baseColor));
-                }
+                this.explodeTile(x,y, new Vector(b.pos.x, b.pos.y));
             }
         }
 
         return hit;
 
+    }
+
+    bomb(b) {
+        const xBase = Math.floor(b.pos.x/ this.tileWidth);
+        const yBase = Math.floor(b.pos.y/ this.tileWidth);
+
+        const size = Math.floor(b.size/2);
+
+        for(var x = -size; x <= size; x++) {
+            for(var y = -size; y <= size; y++) {
+                
+                const hit = this.getCurrent(xBase+x, yBase+y);
+
+                if(hit === 1) {
+                    this.clearTile(xBase+x, yBase+y);
+                    this.explodeTile(xBase+x, yBase+y, new Vector((xBase+x)*this.tileWidth + this.tileWidth/2, (yBase+y)*this.tileWidth + this.tileWidth/2));
+                }
+            }
+        }
+
+        return {
+            startX: xBase*this.tileWidth + this.tileWidth/2,
+            startY: yBase*this.tileWidth + this.tileWidth/2,
+            x: (xBase-size)*this.tileWidth,
+            y: (yBase-size)*this.tileWidth,
+            w: this.tileWidth*b.size,
+            h: this.tileWidth*b.size,
+            counter: 0
+        }
+    }
+
+    clearTile(x, y) {
+        this.currentMap[x][y] = 0;
+        this.context.clearRect(x*this.tileWidth,y* this.tileWidth,this.tileWidth,this.tileWidth);
+    }
+
+    explodeTile(x, y, pos) {
+        if(Math.random() > 0.9) {
+            this.context.fillStyle = "#f3f3f3"
+            this.context.fillText("🌗",x*this.tileWidth + this.tileWidth/2 - this.textMeasure.width, y* this.tileWidth + this.tileWidth/2 + this.textMeasure.height);
+            this.currentMap[x][y] = 4
+        }
+        
+        for(let i = 0; i < 10; i++) {
+            this.game.particles.push(new WorldParticle(this.game, pos, this.baseColor));
+        }
     }
 
     collidesShip(s) {
@@ -295,7 +355,12 @@ export default class World {
             if(hit === 3) {
                 this.game.queueRestart = true;
                 return false;
-                
+            }
+
+            if(hit === 4) {
+                this.game.hud.increaseMineral();
+                this.clearTile(x,y);
+                return false;
             }
 
             const dy = (s.pos.y - (y*this.tileWidth + this.tileWidth/2));

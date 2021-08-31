@@ -1,5 +1,5 @@
 import GameObject from "./gameObject";
-import Bullet from "./bullet";
+import {Bullet} from "./bullet";
 import Vector from "./vector";
 
 export default class Gun extends GameObject {
@@ -12,6 +12,13 @@ export default class Gun extends GameObject {
 
         this.cooldown = 300;
         this.canFire = true;
+        this.canBomb = true;
+
+        this.bomb = {
+            size: 3
+        }
+
+        this.bombCooldown = 10000;
 
         document.addEventListener('mousemove', (event) => {
             this.pos.x = event.clientX;
@@ -32,14 +39,36 @@ export default class Gun extends GameObject {
         const fireVector = new Vector(worldPos.x, worldPos.y);
         fireVector.remove(ship.pos.x,ship.pos.y); 
         fireVector.normalize()
+        fireVector.scale(10,10)
 
         const x = new Vector(10*Math.cos(ship.angle),10*Math.sin(ship.angle));
 
-        this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y),x))
+        this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), x))
+        this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), new Vector(x.y, -1*x.x)))
+        this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), new Vector(-1*x.y, x.x)))
+        this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), new Vector(-1*x.x, -1*x.y)))
+    }
+
+    bomb(ship) {
+        if(!this.canBomb) {
+            return;
+        }
+
+        this.bomb.pos = ship.pos;
+
+
+        this.game.world.bomb(ship);
+        
+
+        
+
     }
 
     update() {
-        
+        if(this.canBomb && this.bomb.pos) {
+            
+            this.game.context.strokeRect(this.bomb.pos.x*this.game.world.tileWidth, this.bomb.pos.x*this.game.world.tileWidth, this.bomb.size*this.game.world.tileWidth, this.bomb.size*this.game.world.tileWidth)
+        }
     }
 
     draw() {

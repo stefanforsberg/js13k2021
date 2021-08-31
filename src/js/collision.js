@@ -8,15 +8,9 @@ export default class Collision {
 
     update() {
         this.game.bullets.revFor((b) => {
-            if(this.game.world.collides(b)) {
-                
-                this.game.bullets.push(new Bullet(this.game,new Vector(b.pos.x, b.pos.x), new Vector(-1+2*Math.random(),-1+2*Math.random())))
-                this.game.bullets.push(new Bullet(this.game,new Vector(b.pos.x, b.pos.x), new Vector(-1+2*Math.random(),-1+2*Math.random())))
-
-                this.game.bullets.push(new Bullet(this.game,new Vector(b.pos.x, b.pos.x), new Vector(-1+2*Math.random(),-1+2*Math.random())))
-
+            const hit = this.game.world.collides(b);
+            if(hit) {
                 b.hit();
-                console.log("asdasd")
             }
 
 

@@ -1,3 +1,4 @@
+import Bomb from "./bomb";
 import GameObject from "./gameObject";
 import Gun from "./gun";
 import Vector from "./vector"
@@ -40,6 +41,7 @@ export default class Ship extends GameObject {
         this.pos = new Vector(200,200);
         this.vel = new Vector(0,0);
         this.gun = new Gun(game);
+        this.bomb = new Bomb(game);
         this.width = 30;
         this.height = 20;
         this.maxVelMagnitude = 4;
@@ -57,6 +59,9 @@ export default class Ship extends GameObject {
         }a
         if(code === 32) {
             this.shooting = pressed;
+        }
+        if(code === 81) {
+            this.bombing = pressed;
         }
     }
  
@@ -94,6 +99,11 @@ export default class Ship extends GameObject {
             this.gun.fire(this);
         }
 
+        if(this.bombing) {
+            console.log("fireing bomb")
+            this.bomb.fire(this);
+        }
+
         this.vel.scaleRound(0.93, 0.1);
 
         this.pos.add(this.vel.x,this.vel.y);
@@ -115,6 +125,7 @@ export default class Ship extends GameObject {
 
 
         this.game.context.strokeStyle = '#FFF';
+        this.game.context.fillStyle = '#FFF';
         this.game.context.lineWidth = 1;
         this.game.context.beginPath();
         this.game.context.moveTo(-this.width/2, -this.height/2);
@@ -122,8 +133,10 @@ export default class Ship extends GameObject {
         this.game.context.lineTo(-this.width/2, this.height/2);
         this.game.context.closePath();
         this.game.context.stroke();
+        this.game.context.fill();
         this.game.context.restore();
         
         this.gun.draw(this.pos);
+        this.bomb.draw(this.pos);
     }
 }

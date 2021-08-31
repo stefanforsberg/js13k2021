@@ -6,11 +6,14 @@ import Collision from "./collision";
 import World from "./world";
 import CPlayer from "./music/player_small";
 import {song} from "./music/song";
+import Hud from "./hud";
 
 export default class Game {
     constructor() {
         this.canvas = document.getElementById('canvas');
         this.context = document.getElementById('canvas').getContext('2d');
+
+
 
         window.onresize = this.onresize;
 
@@ -29,16 +32,14 @@ export default class Game {
         this.running = true;
 
         this.collision = new Collision(this);
-
         
-
-        
+        this.hud = new Hud(this);
 
         this.menu = new Menu();
 
         this.running = true;
 
-        this.debug = true;
+        this.debug = false;
 
         this.world = new World(this);
         
@@ -88,7 +89,7 @@ export default class Game {
     }
 
     startLevel() {
-        console.log("starting level")
+        
         this.running = false;
         this.queueRestart = false;
         this.ship = new Ship(this);
@@ -100,12 +101,13 @@ export default class Game {
 
         this.world.generateNew();
 
+        const worldName = `${Math.random().toString(26).substring(2, 8)}-${Math.random().toString(36).substring(3, 4)}-${Math.random().toString(9).substring(2, 5)}`.toUpperCase();
+        this.hud.addWorld(worldName, `rgba(${this.world.baseColor.r},${this.world.baseColor.g},${this.world.baseColor.b},1)`);
 
         for(var i = 0; i < 10; i++) {
             let pos = this.world.getEmptyPos();
             this.enemies.push(new Enemy.StationaryEnemy(this, pos.x, pos.y));
         }
-
 
         this.ship.pos.x = this.world.startPos.x;
         this.ship.pos.y = this.world.startPos.y;
@@ -114,9 +116,15 @@ export default class Game {
 
         this.camera.zoomTo(1200 + (this.canvas.width-1200) );
 
-        this.running = true;
+        this.hud.drawWorld();
 
-        window.requestAnimationFrame(() => this.draw());
+        setTimeout(() => {
+            this.hud.hideWorld();
+            this.running = true;
+            window.requestAnimationFrame(() => this.draw());
+        }, 100);
+
+
     }
 
     draw() {
@@ -178,7 +186,7 @@ export default class Game {
     }
 
     handleKey(e, pressed) {
-        if([9,32,65,87,68].indexOf(e.keyCode) > -1) {
+        if([9,32,65,87,68,81].indexOf(e.keyCode) > -1) {
             e.preventDefault();
             
             if(e.keyCode === 9 && pressed) {

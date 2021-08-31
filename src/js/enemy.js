@@ -1,6 +1,6 @@
 import GameObject from "./gameObject";
 import Vector from "./vector";
-import Bullet from "./bullet";
+import {EnemyBullet} from "./bullet";
 
 class Enemy extends GameObject {
     constructor(game) {
@@ -26,6 +26,7 @@ class StationaryEnemy extends Enemy {
         this.radius = 15;
         this.coolDown = 2000 + (Math.random()*5000 | 0);
         this.canFire = true;
+        this.color = "#FF00FF";
     }
 
     update() {
@@ -38,12 +39,12 @@ class StationaryEnemy extends Enemy {
             v.normalize();
             v.scale(2,2);
 
-            this.game.enemyBullets.push(new Bullet(this.game,new Vector(this.pos.x, this.pos.y), v))
+            this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), v))
         }
     }
 
     draw() {
-        this.game.context.fillStyle = "#FF00FF";
+        this.game.context.fillStyle = this.color;
         this.game.context.fillRect(this.pos.x,this.pos.y,15,15)    
     }
 }

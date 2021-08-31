@@ -4,6 +4,7 @@ export default class Camera {
         this.distance = 1000.0;
         this.lookAt = [0, 0];
         this.context = context;
+        this.shaking = false;
         this.fieldOfView = settings.fieldOfView || Math.PI / 4.0;
         this.viewport = {
             left: 0,
@@ -33,7 +34,12 @@ export default class Camera {
     }
 
     applyTranslation() {
-        this.context.translate(-this.viewport.left, -this.viewport.top);
+        if(this.shaking) {
+            this.context.translate(-this.viewport.left + Math.random()*10 | 0, -this.viewport.top  + Math.random()*10 | 0);
+        } else {
+            this.context.translate(-this.viewport.left, -this.viewport.top);
+        }
+        
     }
 
     updateViewport() {
@@ -51,6 +57,16 @@ export default class Camera {
     zoomTo(z) {
         this.distance = z;
         this.updateViewport();
+    }
+
+    shake(duration) {
+        if(this.shaking) {
+            return;
+        }
+
+        this.shaking = true;
+
+        setTimeout(() => this.shaking = false, duration);
     }
 
     moveTo(x, y) {
