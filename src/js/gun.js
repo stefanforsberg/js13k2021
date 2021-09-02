@@ -10,6 +10,8 @@ export default class Gun extends GameObject {
 
         this.bullets = [];
 
+        this.bulletsFired = 1;
+
         this.cooldown = 300;
         this.canFire = true;
         this.canBomb = true;
@@ -42,11 +44,13 @@ export default class Gun extends GameObject {
         fireVector.scale(10,10)
 
         const x = new Vector(10*Math.cos(ship.angle),10*Math.sin(ship.angle));
-
+ 
         this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), x))
-        this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), new Vector(x.y, -1*x.x)))
-        this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), new Vector(-1*x.y, x.x)))
-        this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), new Vector(-1*x.x, -1*x.y)))
+        
+        if(this.bulletsFired >1) this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), new Vector(-1*x.x, -1*x.y)))
+        if(this.bulletsFired >2) this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), new Vector(x.y, -1*x.x)))
+        if(this.bulletsFired >3) this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), new Vector(-1*x.y, x.x)))
+        
     }
 
     bomb(ship) {

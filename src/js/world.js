@@ -223,23 +223,24 @@ export default class World {
 
         this.bgContext.clearRect(0,0, this.bgCanvas.width,this.bgCanvas.height);
 
-        for(let i = 0; i < 150; i++) {
+        for(let i = 0; i < 250; i++) {
 
             this.bgContext.save();
             this.bgContext.translate(this.bgCanvas.width/2, this.bgCanvas.height/2)
             this.bgContext.rotate(Math.PI*Math.random());
 
-            this.bgContext.fillStyle = `rgba(${this.starColors.random()},${Math.random()})`;
-            this.bgContext.fillRect(Math.random()*this.bgCanvas.width | 0,Math.random()*this.bgCanvas.height | 0, 1+Math.random(), 1+Math.random());
+            let starSize = 1+3*Math.random();
+            this.bgContext.fillStyle = `rgba(${this.starColors.random()},${0.8-0.4*Math.random()})`;
+            this.bgContext.fillRect(Math.random()*this.bgCanvas.width | 0,Math.random()*this.bgCanvas.height | 0, starSize, starSize);
 
             this.bgContext.font = `${8+Math.random()*200 | 0}px Arial`;
 
-            if(Math.random() > 0.95) {
+            if(Math.random() > 0.97) {
                 this.bgContext.fillStyle = `rgba(255,255,255,${0.15*Math.random()})`;
                 this.bgContext.fillText("🌌", Math.random()*this.bgCanvas.width | 0, Math.random()*this.bgCanvas.height)
             }
 
-            if(Math.random() > 0.9) {
+            if(Math.random() > 0.94) {
                 this.bgContext.fillStyle = `rgba(255,255,255,${0.1*Math.random()})`;
                 this.bgContext.fillText("🌑", Math.random()*this.bgCanvas.width | 0, Math.random()*this.bgCanvas.height)
             }
@@ -283,6 +284,8 @@ export default class World {
                 this.clearTile(x,y);
 
                 this.explodeTile(x,y, new Vector(b.pos.x, b.pos.y));
+
+                this.game.sounds[1].play();
             }
         }
 

@@ -5,7 +5,7 @@ import Menu from "./menu"
 import Collision from "./collision";
 import World from "./world";
 import CPlayer from "./music/player_small";
-import {song} from "./music/song";
+import {song, sfxHit} from "./music/song";
 import Hud from "./hud";
 
 export default class Game {
@@ -45,34 +45,42 @@ export default class Game {
         
 
         this.player = new CPlayer();
-        this.mainSong = this.player.init(song);
 
+        this.soundsLoading = [song, sfxHit]
+        this.sounds = [];
+        this.currentlyLoadingIndex = 0;
+
+        this.player.init(this.soundsLoading[this.currentlyLoadingIndex]);
         
         this.loader();
         
     }
 
     loader() {
-        
-        this.startLevel();
 
-        // const done = this.player.generate() >= 1;
+        if(this.player.generate() < 1) {
+            console.log("not loaded eyt")
+            setTimeout(() => this.loader(), 500);
+            return;
+        } else {
+            console.log("loaded 1 tjing")
+            const wave = this.player.createWave();
+            const audio = document.createElement("audio");
+            audio.src = URL.createObjectURL(new Blob([wave], {type: "audio/wav"}));
+            this.sounds.push(audio);
 
+            this.currentlyLoadingIndex++;
 
-        // if(!done) {
+            if(this.currentlyLoadingIndex < this.soundsLoading.length) {
+                this.player.init(this.soundsLoading[this.currentlyLoadingIndex]);
+                this.loader();
+            } else {
+                this.startLevel();
+            }
             
-        //     setTimeout(() => this.loader(), 1000);
-        // } else {
-
-        //     var wave = this.player.createWave();
-        //     var audio = document.createElement("audio");
-        //     audio.src = URL.createObjectURL(new Blob([wave], {type: "audio/wav"}));
-        //     audio.play();
-        //     audio.loop = true;
-
-        //     this.startLevel();
-        // }
-        
+            
+        }
+       
     }
 
     onresize() {
@@ -89,6 +97,8 @@ export default class Game {
     }
 
     startLevel() {
+
+        this.sounds[0].play();
         
         this.running = false;
         this.queueRestart = false;
@@ -118,6 +128,9 @@ export default class Game {
 
         this.hud.drawWorld();
 
+        this.updateFromPowerups();
+        
+
         setTimeout(() => {
             this.hud.hideWorld();
             this.running = true;
@@ -125,6 +138,12 @@ export default class Game {
         }, 100);
 
 
+    }
+
+    updateFromPowerups() {
+        this.ship.maxVelMagnitude = this.menu.powerUpsSettings.s.maxVelocity
+        this.ship.bomb.size = this.menu.powerUpsSettings.b.size
+        this.ship.gun.bulletsFired = this.menu.powerUpsSettings.g.bullets
     }
 
     draw() {
@@ -191,6 +210,10 @@ export default class Game {
             
             if(e.keyCode === 9 && pressed) {
                 this.running = !this.menu.toggle();
+
+                if(this.running) {
+                    this.updateFromPowerups();
+                }
             }
             
             this.ship.handleKey(e.keyCode, pressed)

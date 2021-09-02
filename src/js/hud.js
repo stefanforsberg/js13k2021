@@ -6,6 +6,8 @@ export default class Hud {
         this.mineral = 0;
 
         this.worldList = [];
+
+        
     }
 
     increaseMineral() {
@@ -30,6 +32,8 @@ export default class Hud {
     addWorld(world, color) {
         this.worldList.push({world, color});
     }
+
+
 
 
 
