@@ -328,7 +328,7 @@ export default class World {
         }
     }
 
-    collidesShip(s) {
+    collidesShip(s, e) {
 
         const nextX = s.pos.x + 2*s.vel.x;
         const nextY = s.pos.y + 2*s.vel.y;
@@ -344,15 +344,11 @@ export default class World {
 
             this.shipCollidesPos = x + "," + y;
 
-            if(hit === 3) {
-                this.game.queueRestart = true;
-                return false;
-            }
-
-            if(hit === 4) {
-                this.game.hud.increaseMineral();
-                this.clearTile(x,y);
-                return false;
+            if(!e) {
+                if(hit === 3) {
+                    this.game.queueRestart = true;
+                    return false;
+                }
             }
 
             const dy = (s.pos.y - (y*this.tileWidth + this.tileWidth/2));

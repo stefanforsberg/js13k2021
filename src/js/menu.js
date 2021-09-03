@@ -14,6 +14,9 @@ export default class Menu {
             {i:"🔫", d:"+bullets", a: false, f: (p) => p.g.bullets+=1},
             {i:"🔫", d:"+bullets", a: false, f: (p) => p.g.bullets+=1},
             {i:"🔫", d:"+aim with mouse", a: false, f: (p) => p.g.mouseAim=true},
+            {i:"🔫", d:"+bullet penetration", a: false, f: (p) => p.g.bulletLife+=1},
+            {i:"🔫", d:"+bullet penetration", a: false, f: (p) => p.g.bulletLife+=1},
+            {i:"🔫", d:"+bullet penetration", a: false, f: (p) => p.g.bulletLife+=1},
 
 
             
@@ -65,7 +68,8 @@ export default class Menu {
             },
             g: {
                 mouseAim: false,
-                bullets: 1
+                bullets: 1,
+                bulletLife: 0
             }
         };
     }

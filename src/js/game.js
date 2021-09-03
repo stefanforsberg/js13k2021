@@ -29,8 +29,6 @@ export default class Game {
 
         this.camera = new Camera(this.context);
 
-        this.running = true;
-
         this.collision = new Collision(this);
         
         this.hud = new Hud(this);
@@ -39,18 +37,21 @@ export default class Game {
 
         this.running = true;
 
-        this.debug = false;
+        this.debug = true;
 
         this.world = new World(this);
 
         this.sounds = new Sounds(this);
 
-        this.sounds.load(() => { this.startLevel()})
+        this.hud.drawTitle("Loading")
+
+        this.sounds.load(() => { 
+            
+            this.startLevel()
+        })
     }
 
     onresize() {
-
-        console.log("resize")
 
         if(!this.canvas) return;
     
@@ -61,7 +62,7 @@ export default class Game {
         this.canvas.height = screenHeight;
     }
 
-    startLevel() {
+    startLevel(death) {
 
         this.sounds.playSong(0);
         
@@ -80,9 +81,22 @@ export default class Game {
         const worldName = `${Math.random().toString(26).substring(2, 8)}-${Math.random().toString(36).substring(3, 4)}-${Math.random().toString(9).substring(2, 5)}`.toUpperCase();
         this.hud.addWorld(worldName, `rgba(${this.world.baseColor.r},${this.world.baseColor.g},${this.world.baseColor.b},1)`);
 
+        if(death) {
+            this.hud.drawTitle(`That was not you purpose.<br>Half of resources lost.<br>Memory reset.<br><br>Next system is <span style="font-weight: bold; color: rgba(${this.world.baseColor.r},${this.world.baseColor.g},${this.world.baseColor.b},1)">${worldName}</span>`)
+        } else {
+            this.hud.drawTitle(`Welcome. Find your purpose.<br><br>Next system is <span style="font-weight: bold; color: rgba(${this.world.baseColor.r},${this.world.baseColor.g},${this.world.baseColor.b},1)">${worldName}</span>`)
+        }
+        
+
         for(var i = 0; i < 10; i++) {
             let pos = this.world.getEmptyPos();
-            this.enemies.push(new Enemy.StationaryEnemy(this, pos.x, pos.y));
+            
+            if(Math.random() > 0.8) {
+                this.enemies.push(new Enemy.MovingEnemy(this, pos.x, pos.y));
+            } else {
+                this.enemies.push(new Enemy.StationaryEnemy(this, pos.x, pos.y));
+
+            }
         }
 
         this.ship.pos.x = this.world.startPos.x;
@@ -92,18 +106,24 @@ export default class Game {
 
         this.camera.zoomTo(1200 + (this.canvas.width-1200) );
 
-        this.hud.drawWorld();
-
         this.updateFromPowerups();
+
+        this.world.draw();
         
 
-        setTimeout(() => {
-            this.hud.hideWorld();
-            this.running = true;
-            window.requestAnimationFrame(() => this.draw());
-        }, 100);
+        // setTimeout(() => {
+        //     this.hud.hideTitle();
+        //     this.running = true;
+        //     window.requestAnimationFrame(() => this.draw());
+        // }, 1000);
 
 
+    }
+
+    startPlaying() {
+        this.hud.hideTitle();
+        this.running = true;
+        window.requestAnimationFrame(() => this.draw());
     }
 
     updateFromPowerups() {
@@ -111,12 +131,17 @@ export default class Game {
         this.ship.bomb.size = this.menu.powerUpsSettings.b.size
         this.ship.gun.bulletsFired = this.menu.powerUpsSettings.g.bullets
         this.ship.gun.mouseAim = this.menu.powerUpsSettings.g.mouseAim
+        this.ship.gun.bulletLife = this.menu.powerUpsSettings.g.bulletLife
+
+        window.requestAnimationFrame(() => this.draw());
     }
 
     endGame() {
         this.running = false;
 
-        document.getElementById("title").style.display = 'flex';
+        this.hud.mineral = this.hud.mineral / 2 | 0;
+
+        this.startLevel(true);
     }
 
     draw() {
@@ -181,17 +206,24 @@ export default class Game {
             this.particles.forEach((p) => p.draw());
             
             this.camera.end();
-        }
+
+            window.requestAnimationFrame(() => this.draw());
+            
+        } 
+
         
-        window.requestAnimationFrame(() => this.draw());
+        
     }
 
     handleKey(e, pressed) {
-        if([9,32,65,87,68,81].indexOf(e.keyCode) > -1) {
+
+        if([9,32,65,87,68,81,70].indexOf(e.keyCode) > -1) {
             e.preventDefault();
             
             if(e.keyCode === 9 && pressed) {
                 this.running = !this.menu.toggle();
+
+                console.log(this.running);
 
                 if(this.running) {
                     this.updateFromPowerups();

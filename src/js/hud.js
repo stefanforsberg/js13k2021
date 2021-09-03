@@ -1,11 +1,22 @@
 export default class Hud {
-    constructor() {
+    constructor(game) {
+        this.game = game;
         this.e = document.getElementById("hud");
         this.worldElement = document.getElementById("world");
         this.worldListElement = document.getElementById("worldlist");
         this.mineral = 0;
+        this.spentMineral = 0;
+
+        this.title = document.getElementById("title");
+        this.titleText = document.getElementById("titleText");
 
         this.worldList = [];
+
+        this.title.addEventListener("click", () => {
+            if(this.showing) {
+                this.game.startPlaying();
+            }
+        })
 
         
     }
@@ -19,14 +30,16 @@ export default class Hud {
         this.e.innerHTML = `${this.mineral} minerals`
     }
 
-    drawWorld() {
-        this.worldElement.style.display = 'block';
-        this.worldListElement.innerHTML = this.worldList.map(w => `<span>System:</span> <span style="color: ${w.color}">${w.world}</span>`).join("<br />⥥<br />");
+    drawTitle(t) {
+        this.showing = true;
+        this.title.style.display = "flex";
+        this.titleText.innerHTML = t;
     }
 
-    hideWorld()
+    hideTitle()
     {
-        this.worldElement.style.display = 'none';
+        this.showing = false;
+        this.title.style.display = 'none';
     }
     
     addWorld(world, color) {

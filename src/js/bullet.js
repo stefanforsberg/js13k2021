@@ -7,10 +7,8 @@ class Bullet extends GameObject {
 
         this.pos = pos;
         this.vel = velocity;
-        this.radius = 4  ;
         this.life = 0;
 
-        this.color = "#FFF";
      }
 
     hit() {
@@ -46,14 +44,30 @@ class Bullet extends GameObject {
     }
 }
 
+class PlayerBullet extends Bullet {
+    constructor(game, pos, velocity, life) {
+        super(game, pos, velocity);
+
+        this.color = "#FFF";
+        this.radius = 8;
+
+        this.life = life;
+     }
+}
+
 class EnemyBullet extends Bullet {
-    constructor(game, pos, velocity) {
+    constructor(game, pos, velocity, life) {
         super(game, pos, velocity);
 
         this.color = "#FF0000";
+        this.radius = 4;
+
+        if(!life) {
+            this.life = 0;
+        }
      }
 }
 
 export {
-    Bullet, EnemyBullet
+    Bullet, EnemyBullet, PlayerBullet
 }

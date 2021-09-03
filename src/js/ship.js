@@ -47,8 +47,14 @@ export default class Ship extends GameObject {
         this.height = 20;
         this.maxVelMagnitude = 4;
         this.pickupRadius = 100;
-        this.life = 5;
+        this.life = 1;
         this.radius = 20;
+        
+        this.invulCooldown = 5000;
+        this.invulPeriod = 2000;
+
+        this.canInvulv = true;
+        this.isInvul = false;
 
     }
 
@@ -68,9 +74,16 @@ export default class Ship extends GameObject {
         if(code === 81) {
             this.bombing = pressed;
         }
+        if(code === 70) {
+            this.invul = pressed;
+        }
     }
 
     hit() {
+        if(this.isInvul) {
+            return;
+        }
+
         this.life--;
 
         if(this.life <= 0) {
@@ -84,11 +97,11 @@ export default class Ship extends GameObject {
         
 
         if(this.left) {
-            this.angle-= 0.1;
+            this.angle-= 0.05;
         }
 
         if(this.right) {
-            this.angle+= 0.1;
+            this.angle+= 0.05;
         }
 
         if(this.up) {
@@ -106,6 +119,15 @@ export default class Ship extends GameObject {
             this.vel.scaleRound(this.maxVelMagnitude, 0)
         };
 
+        if(this.invul && this.canInvulv && !this.isInvul) {
+            this.isInvul = true;
+            this.canInvulv = false;
+            
+            setTimeout(() => this.isInvul = false, this.invulPeriod);
+            setTimeout(() => this.canInvulv = true, this.invulCooldown);
+
+        }
+
         if(this.shooting) {
             this.gun.fire(this);
         }
@@ -122,6 +144,8 @@ export default class Ship extends GameObject {
         this.game.particles.forEach((p) => p.update());
 
         this.gun.update();
+
+
 
 
     }
@@ -166,18 +190,26 @@ export default class Ship extends GameObject {
         this.game.context.shadowBlur = 20;
         this.game.context.shadowColor = "#ffffff";
 
-        // ctx.createRadialGradient(x0, y0, r0, x1, y1, r1);
+        if(this.isInvul) {
+            this.game.context.fillStyle = `#fcfbfe`;
+            this.game.context.beginPath();
+            this.game.context.arc(this.pos.x, this.pos.y, 30 , 0, 2 * Math.PI, false);
+            this.game.context.arc(this.pos.x, this.pos.y, 25 , 0, 2 * Math.PI, true);
+            this.game.context.fill();
+        } else {
+            
 
-        // for(var i = 0; i < this.life; i++) {
             this.game.context.fillStyle = `rgba(0,255,255,${0.8*this.life/5})`;
             this.game.context.beginPath();
             this.game.context.arc(this.pos.x, this.pos.y, 30 , 0, 2 * Math.PI, false);
             this.game.context.arc(this.pos.x, this.pos.y, 25 , 0, 2 * Math.PI, true);
             this.game.context.fill();
+            
+        }
 
-            // this.game.context.fillRect(this.pos.x, this.pos.y,100,100);
-        // }
-        
         this.game.context.restore();
+
+
+        
     }
 }

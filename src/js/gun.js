@@ -1,5 +1,5 @@
 import GameObject from "./gameObject";
-import {Bullet} from "./bullet";
+import {PlayerBullet} from "./bullet";
 import Vector from "./vector";
 
 export default class Gun extends GameObject {
@@ -15,6 +15,8 @@ export default class Gun extends GameObject {
         this.cooldown = 300;
         this.canFire = true;
         this.canBomb = true;
+
+        this.bulletLife = 0;
 
         this.bomb = {
             size: 3
@@ -50,11 +52,11 @@ export default class Gun extends GameObject {
             v = new Vector(10*Math.cos(ship.angle),10*Math.sin(ship.angle));
         }
         
-        this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), v))
+        this.game.bullets.push(new PlayerBullet(this.game,new Vector(ship.pos.x, ship.pos.y), v, this.bulletLife))
         
-        if(this.bulletsFired >1) this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), new Vector(-1*v.x, -1*v.y)))
-        if(this.bulletsFired >2) this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), new Vector(v.y, -1*v.x)))
-        if(this.bulletsFired >3) this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), new Vector(-1*v.y, v.x)))
+        if(this.bulletsFired >1) this.game.bullets.push(new PlayerBullet(this.game,new Vector(ship.pos.x, ship.pos.y), new Vector(-1*v.x, -1*v.y), this.bulletLife))
+        if(this.bulletsFired >2) this.game.bullets.push(new PlayerBullet(this.game,new Vector(ship.pos.x, ship.pos.y), new Vector(v.y, -1*v.x), this.bulletLife))
+        if(this.bulletsFired >3) this.game.bullets.push(new PlayerBullet(this.game,new Vector(ship.pos.x, ship.pos.y), new Vector(-1*v.y, v.x), this.bulletLife))
         
     }
 

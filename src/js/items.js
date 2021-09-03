@@ -55,7 +55,6 @@ export default class Item extends GameObject {
     update() {
 
         if(!this.isHit) {
-            console.log("this.hit");
             return;
         }
 
