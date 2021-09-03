@@ -1,5 +1,6 @@
 import GameObject from "./gameObject";
 import Vector from "./vector"
+import Item from "./items"
 
 const Generator = {
     // game of life variables
@@ -176,16 +177,6 @@ export default class World {
 
         this.tileWidth = 50;
 
-        this.context.font = (this.tileWidth/2 | 0) + "px Arial";
-
-        const textMeasure = this.context.measureText("🌓")
-
-        this.textMeasure = {
-            width: textMeasure.width / 2,
-            height: (textMeasure.actualBoundingBoxAscent + textMeasure.actualBoundingBoxDescent) / 2 
-        };
-        console.log(this.textMeasure);
-
         const r = (100+Math.random()*100)| 0;
         const g = (100+Math.random()*100)| 0;
         const b = (100+Math.random()*100)| 0;
@@ -285,7 +276,7 @@ export default class World {
 
                 this.explodeTile(x,y, new Vector(b.pos.x, b.pos.y));
 
-                this.game.sounds[1].play();
+                this.game.sounds.sfx(1);
             }
         }
 
@@ -329,9 +320,7 @@ export default class World {
 
     explodeTile(x, y, pos) {
         if(Math.random() > 0.9) {
-            this.context.fillStyle = "#f3f3f3"
-            this.context.fillText("🌗",x*this.tileWidth + this.tileWidth/2 - this.textMeasure.width, y* this.tileWidth + this.tileWidth/2 + this.textMeasure.height);
-            this.currentMap[x][y] = 4
+            this.game.items.push(new Item(this.game, new Vector(x*this.tileWidth + this.tileWidth/2, y*this.tileWidth + this.tileWidth/2)))
         }
         
         for(let i = 0; i < 10; i++) {

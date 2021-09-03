@@ -4,9 +4,9 @@ import * as Enemy from "./enemy"
 import Menu from "./menu"
 import Collision from "./collision";
 import World from "./world";
-import CPlayer from "./music/player_small";
-import {song, sfxHit} from "./music/song";
+
 import Hud from "./hud";
+import Sounds from "./sounds";
 
 export default class Game {
     constructor() {
@@ -42,45 +42,10 @@ export default class Game {
         this.debug = false;
 
         this.world = new World(this);
-        
 
-        this.player = new CPlayer();
+        this.sounds = new Sounds(this);
 
-        this.soundsLoading = [song, sfxHit]
-        this.sounds = [];
-        this.currentlyLoadingIndex = 0;
-
-        this.player.init(this.soundsLoading[this.currentlyLoadingIndex]);
-        
-        this.loader();
-        
-    }
-
-    loader() {
-
-        if(this.player.generate() < 1) {
-            console.log("not loaded eyt")
-            setTimeout(() => this.loader(), 500);
-            return;
-        } else {
-            console.log("loaded 1 tjing")
-            const wave = this.player.createWave();
-            const audio = document.createElement("audio");
-            audio.src = URL.createObjectURL(new Blob([wave], {type: "audio/wav"}));
-            this.sounds.push(audio);
-
-            this.currentlyLoadingIndex++;
-
-            if(this.currentlyLoadingIndex < this.soundsLoading.length) {
-                this.player.init(this.soundsLoading[this.currentlyLoadingIndex]);
-                this.loader();
-            } else {
-                this.startLevel();
-            }
-            
-            
-        }
-       
+        this.sounds.load(() => { this.startLevel()})
     }
 
     onresize() {
@@ -98,7 +63,7 @@ export default class Game {
 
     startLevel() {
 
-        this.sounds[0].play();
+        this.sounds.playSong(0);
         
         this.running = false;
         this.queueRestart = false;
@@ -108,6 +73,7 @@ export default class Game {
         this.enemyBullets = [];
         this.enemies = [];
         this.particles = [];
+        this.items = [];
 
         this.world.generateNew();
 
@@ -144,6 +110,13 @@ export default class Game {
         this.ship.maxVelMagnitude = this.menu.powerUpsSettings.s.maxVelocity
         this.ship.bomb.size = this.menu.powerUpsSettings.b.size
         this.ship.gun.bulletsFired = this.menu.powerUpsSettings.g.bullets
+        this.ship.gun.mouseAim = this.menu.powerUpsSettings.g.mouseAim
+    }
+
+    endGame() {
+        this.running = false;
+
+        document.getElementById("title").style.display = 'flex';
     }
 
     draw() {
@@ -171,10 +144,15 @@ export default class Game {
 
             this.particles.forEach((p) => p.update());
 
+            this.items.forEach((i) => {
+                i.update();
+            });
+
             this.particles = this.particles.filter((b) => !b.removeable);
             this.bullets = this.bullets.filter((b) => !b.removeable);
             this.enemyBullets = this.enemyBullets.filter((e) => !e.removeable);
             this.enemies = this.enemies.filter((e) => !e.removeable);
+            this.items = this.items.filter((i) => !i.removeable);
     
             this.context.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -194,6 +172,10 @@ export default class Game {
 
             this.enemyBullets.forEach((b) => {
                 b.draw();
+            });
+
+            this.items.forEach((i) => {
+                i.draw();
             });
 
             this.particles.forEach((p) => p.draw());

@@ -8,7 +8,7 @@ class Bullet extends GameObject {
         this.pos = pos;
         this.vel = velocity;
         this.radius = 4  ;
-        this.life = 1;
+        this.life = 0;
 
         this.color = "#FFF";
      }
@@ -17,7 +17,6 @@ class Bullet extends GameObject {
         const vel = new Vector(-1+2*Math.random(),-1+2*Math.random())
         vel.normalize();
         vel.scale(2,2);
-        // this.game.bullets.push(new Bullet(this.game,new Vector(this.pos.x, this.pos.y), vel))
         
         if(this.life <= 0) {
             this.removeable = true;
@@ -44,9 +43,6 @@ class Bullet extends GameObject {
         this.game.context.fillStyle = this.color; 
         this.game.context.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
         this.game.context.fill();
-
-        
-        // this.game.context.fillRect(this.pos.x-5, this.pos.y-5 , 10, 10);
     }
 }
 

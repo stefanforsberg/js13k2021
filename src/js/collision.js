@@ -26,7 +26,25 @@ export default class Collision {
             if(this.game.world.collides(b)) {
                 b.hit();
             }
+
+            if(this.collides(b,this.game.ship)) {
+                b.hit();
+                this.game.ship.hit();
+            }
         });
+
+        this.game.enemies.revFor((e) => {
+            if(this.collides(this.game.ship,e)) {
+                this.game.ship.hit();
+                e.hit();
+            }
+        })
+
+        this.game.items.revFor((i) => {
+            if(this.collides(i, {pos: this.game.ship.pos, radius: this.game.ship.pickupRadius})) {
+                i.hit();
+            }
+        })
     }
 
     collides(a, b) {

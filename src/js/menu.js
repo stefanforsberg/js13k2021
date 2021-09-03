@@ -13,6 +13,7 @@ export default class Menu {
             {i:"🔫", d:"+bullets", a: false, f: (p) => p.g.bullets+=1},
             {i:"🔫", d:"+bullets", a: false, f: (p) => p.g.bullets+=1},
             {i:"🔫", d:"+bullets", a: false, f: (p) => p.g.bullets+=1},
+            {i:"🔫", d:"+aim with mouse", a: false, f: (p) => p.g.mouseAim=true},
 
 
             
@@ -63,6 +64,7 @@ export default class Menu {
                 size: 1
             },
             g: {
+                mouseAim: false,
                 bullets: 1
             }
         };

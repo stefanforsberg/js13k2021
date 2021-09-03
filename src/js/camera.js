@@ -122,5 +122,3 @@ export default class Camera {
         return (x<this.viewport.left || x>this.viewport.right || y<this.viewport.top || y>this.viewport.bottom);
     }
 };
-
-export default Camera;

@@ -34,7 +34,7 @@
 //    further by deleting the code.
 
 
-export default CPlayer = function() {
+const CPlayer = function() {
 
     //--------------------------------------------------------------------------
     // Private methods
@@ -356,3 +356,5 @@ export default CPlayer = function() {
         return d;
     };
 };
+
+export default CPlayer;

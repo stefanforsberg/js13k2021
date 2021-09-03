@@ -38,18 +38,23 @@ export default class Gun extends GameObject {
         this.canFire = false;
 
         const worldPos = this.game.camera.screenToWorld(this.pos.x, this.pos.y)
-        const fireVector = new Vector(worldPos.x, worldPos.y);
-        fireVector.remove(ship.pos.x,ship.pos.y); 
-        fireVector.normalize()
-        fireVector.scale(10,10)
-
-        const x = new Vector(10*Math.cos(ship.angle),10*Math.sin(ship.angle));
- 
-        this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), x))
         
-        if(this.bulletsFired >1) this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), new Vector(-1*x.x, -1*x.y)))
-        if(this.bulletsFired >2) this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), new Vector(x.y, -1*x.x)))
-        if(this.bulletsFired >3) this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), new Vector(-1*x.y, x.x)))
+        let v = {};
+
+        if(this.mouseAim) {
+            v = new Vector(worldPos.x, worldPos.y);
+            v.remove(ship.pos.x,ship.pos.y); 
+            v.normalize()
+            v.scale(10,10)
+        } else {
+            v = new Vector(10*Math.cos(ship.angle),10*Math.sin(ship.angle));
+        }
+        
+        this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), v))
+        
+        if(this.bulletsFired >1) this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), new Vector(-1*v.x, -1*v.y)))
+        if(this.bulletsFired >2) this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), new Vector(v.y, -1*v.x)))
+        if(this.bulletsFired >3) this.game.bullets.push(new Bullet(this.game,new Vector(ship.pos.x, ship.pos.y), new Vector(-1*v.y, v.x)))
         
     }
 

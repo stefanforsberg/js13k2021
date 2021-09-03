@@ -12,6 +12,7 @@ class Particle extends GameObject {
         this.width = 2;
         this.height = 2;
         this.alpha = 1;
+
     }
 
     update() {
@@ -45,6 +46,10 @@ export default class Ship extends GameObject {
         this.width = 30;
         this.height = 20;
         this.maxVelMagnitude = 4;
+        this.pickupRadius = 100;
+        this.life = 5;
+        this.radius = 20;
+
     }
 
     handleKey(code, pressed) {
@@ -64,10 +69,16 @@ export default class Ship extends GameObject {
             this.bombing = pressed;
         }
     }
- 
-    update(
 
-    ) {
+    hit() {
+        this.life--;
+
+        if(this.life <= 0) {
+            this.game.endGame();
+        }
+    }
+ 
+    update() {
 
 
         
@@ -117,12 +128,12 @@ export default class Ship extends GameObject {
 
     draw() {
 
+        this.drawLifeCircle();
+
         this.game.context.save();
         this.game.context.translate(this.pos.x >> 0, this.pos.y >> 0);
         this.game.context.rotate(this.angle);
     
-        super.draw();
-
 
         this.game.context.strokeStyle = '#FFF';
         this.game.context.fillStyle = '#FFF';
@@ -135,8 +146,38 @@ export default class Ship extends GameObject {
         this.game.context.stroke();
         this.game.context.fill();
         this.game.context.restore();
+
+
+
+
+        
+
+        
+        super.draw();
+
         
         this.gun.draw(this.pos);
         this.bomb.draw(this.pos);
+    }
+
+    drawLifeCircle() {
+
+        this.game.context.save();
+        this.game.context.shadowBlur = 20;
+        this.game.context.shadowColor = "#ffffff";
+
+        // ctx.createRadialGradient(x0, y0, r0, x1, y1, r1);
+
+        // for(var i = 0; i < this.life; i++) {
+            this.game.context.fillStyle = `rgba(0,255,255,${0.8*this.life/5})`;
+            this.game.context.beginPath();
+            this.game.context.arc(this.pos.x, this.pos.y, 30 , 0, 2 * Math.PI, false);
+            this.game.context.arc(this.pos.x, this.pos.y, 25 , 0, 2 * Math.PI, true);
+            this.game.context.fill();
+
+            // this.game.context.fillRect(this.pos.x, this.pos.y,100,100);
+        // }
+        
+        this.game.context.restore();
     }
 }
