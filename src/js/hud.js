@@ -21,8 +21,13 @@ export default class Hud {
         
     }
 
-    increaseMineral() {
-        this.mineral++;
+    increaseMineral(a) {
+        if(a) {
+            this.mineral += a;
+        } else {
+            this.mineral++;
+        }
+        
         this.draw();
     }
 
@@ -34,14 +39,18 @@ export default class Hud {
         this.showing = true;
         this.title.style.display = "flex";
         this.titleText.innerHTML = t;
+        this.game.titleVisible = true;
     }
 
     hideTitle()
     {
+        console.log("hide title")
         this.showing = false;
         this.title.style.display = 'none';
+        this.game.titleVisible = false;
+
     }
-    
+
     addWorld(world, color) {
         this.worldList.push({world, color});
     }

@@ -8,10 +8,10 @@ const Generator = {
     deathLimit: 3,
     birthLimit: 4,
     numberOfSteps: 10,
-    worldWidth: 40,
-    worldHeight: 20,
+    worldWidth: 15,
+    worldHeight: 15,
 
-    generateMap: function() {
+    generateMap: function(w, h) {
         var map = [[]];
         // randomly scatter solid blocks
         this.initialiseMap(map);
@@ -19,6 +19,18 @@ const Generator = {
         for(var i = 0; i < this.numberOfSteps; i++) {
             map = this.step(map);
         }
+
+        console.log("w: " + w)
+
+        if(w) {
+            console.log("setting w")
+            this.worldWidth = w;
+        }
+        if(h) {
+            this.worldHeight = h;
+        }
+
+        console.log(this.worldWidth + ";" + this.worldHeight)
 
         return map;
     },
@@ -52,11 +64,7 @@ const Generator = {
             for(var y = 0; y < map[0].length; y++) {
 
                 if(x === 0 || y === 0 || x === map.length-1 || y === map[0].length-1) {
-                    if(Math.random()> 0.9) {
-                        newMap[x][y] = 3;
-                    } else {
-                        newMap[x][y] = 2;
-                    }
+                    newMap[x][y] = 2;
                 } else {
                     var nbs = this.countAliveNeighbours(map, x, y);
                     if(map[x][y] > 0) {
@@ -103,18 +111,6 @@ const Generator = {
         return count;
     },
 
-    placeTreasure: function(limit) {
-        for(var x = 0; x < this.worldWidth; x++) {
-            for( var y = 0; y < this.worldHeight; y++) {
-                if(world[x][y] === 0) {
-                    var nbs = this.countAliveNeighbours(world, x, y);
-                    if(nbs >= limit) {
-                        world[x][y] = 2;
-                    }
-                }
-            }
-        }
-    }
 }
 
 class WorldParticle extends GameObject {
@@ -162,11 +158,13 @@ export default class World {
     }
 
     getEmptyPos() {
-        return this.emptyPositions.random();
+        return this.emptyPositions.random(true);
     }
 
-    generateNew() {
-        this.currentMap = Generator.generateMap();
+    generateNew(w, h) {
+
+        this.updateCounter = 0;
+        this.currentMap = Generator.generateMap(w, h);
         
         this.worldCanvas.width = this.currentMap.length*100;
         this.worldCanvas.height = this.currentMap[0].length*100;
@@ -183,6 +181,9 @@ export default class World {
 
         this.baseColor = {r,g,b};
 
+        this.context.strokeStyle = `rgba(0,255, 255, 1)`;
+        this.context.strokeRect(this.tileWidth,this.tileWidth,this.tileWidth*(this.currentMap.length-2), this.tileWidth*(this.currentMap[0].length-2));
+
         for(let x = 0; x < this.currentMap.length; x++) {
             for(let y = 0; y < this.currentMap[x].length; y++) {
                 if(this.currentMap[x][y]) {
@@ -190,24 +191,49 @@ export default class World {
                     let colorShade = Math.random()*20 | 0;
 
                     if(this.currentMap[x][y] === 2) {
-                        this.context.fillStyle = `rgba(${(r-70)},${(g-70)},${(b-70)}, 0.3)`;
-                        this.context.fillRect(x*this.tileWidth,y*this.tileWidth,this.tileWidth,this.tileWidth);
+                        // this.context.fillStyle = `rgba(${(r-70)},${(g-70)},${(b-70)}, 0.8)`;
+                        // this.context.fillRect(x*this.tileWidth,y*this.tileWidth,this.tileWidth,this.tileWidth);
                     } else if(this.currentMap[x][y] === 1) {
+
+                        const baseX = x*this.tileWidth;
+                        const baseY = y*this.tileWidth;
                         this.context.fillStyle = `rgba(${(r-colorShade)},${(g-colorShade)},${(b-colorShade)})`;
-                        this.context.fillRect(x*this.tileWidth,y*this.tileWidth,this.tileWidth,this.tileWidth);
+                        this.context.fillRect(baseX,baseY,this.tileWidth,this.tileWidth);
+
+                        for(let i = 0; i < 30; i++) {
+                            let colorShade = Math.random()*20 | 0;
+
+                            this.context.save()
+                            this.context.translate(baseX+this.tileWidth/2, baseY+this.tileWidth/2);
+                            this.context.rotate(Math.random()*6);
+                            this.context.fillStyle = `rgba(${(r-colorShade)},${(g-colorShade)},${(b-colorShade)}, 0.8)`;
+                            let xsize = Math.random()*this.tileWidth + 5
+                            let ysize = Math.random()*this.tileWidth +5
+                            this.context.fillRect(-xsize/2 - 4 + 8*Math.random(),-ysize/2  - 4 + 8*Math.random(),xsize, ysize);
+                            this.context.restore()
+
+                            if(Math.random() > 0.95) {
+                                this.context.clearRect(baseX + Math.random()*this.tileWidth, baseY, Math.random()*8, Math.random()*8)
+                                this.context.clearRect(baseX + Math.random()*this.tileWidth, baseY + this.tileWidth-5, Math.random()*8, Math.random()*8)    
+                                this.context.clearRect(baseX, baseY + Math.random()*this.tileWidth, Math.random()*8, Math.random()*8)
+                                this.context.clearRect(baseX + this.tileWidth - 5, baseY + Math.random()*this.tileWidth, Math.random()*8, Math.random()*8)
+                            }
+
+                        }
+
+                        
+
                     }
                 } else {
-                    this.emptyPositions.push({x: x*this.tileWidth+(this.tileWidth/2), y: y*this.tileWidth+(this.tileWidth/2)})
+                    this.emptyPositions.push({x: x*this.tileWidth+(this.tileWidth/2), y: y*this.tileWidth+(this.tileWidth/2), xPos: x, yPos: y})
                 }
             }
         }
 
-        this.startPos = this.emptyPositions.random();
         this.starColors = ["255,255,255", "57,190,255", "170, 172, 217", "255,255,0"]
 
         this.bgCanvas.style.backgroundImage = `linear-gradient(black, rgba(${Math.random()*40 | 0},${Math.random()*40 | 0},${Math.random()*40 | 0},1))`;
 
-        console.log(this.bgCanvas.style.backgroundImage)
 
         this.width = this.currentMap.length*this.tileWidth;
         this.height = this.currentMap[0].length*this.tileWidth;
@@ -238,6 +264,13 @@ export default class World {
 
             this.bgContext.restore();
         }
+
+        this.portalPos = this.getEmptyPos();
+        this.context.fillStyle = `rgba(255,255,255,1)`;
+        this.context.fillRect(this.portalPos.x-this.tileWidth/2,this.portalPos.y-this.tileWidth/2,this.tileWidth,this.tileWidth);
+
+        this.currentMap[this.portalPos.xPos][this.portalPos.yPos] = 3;
+
 
         
     }
@@ -315,6 +348,17 @@ export default class World {
 
     clearTile(x, y) {
         this.currentMap[x][y] = 0;
+
+        for(let xx = -1; xx <= 1; xx++) {
+            for(let yy = -1; yy<= 1; yy++) {
+                console.log(this.getCurrent(x+xx,y+yy))
+                if(this.getCurrent(x+xx,y+yy) === 0) {
+                    this.context.clearRect((x+xx)*this.tileWidth,(y+yy)* this.tileWidth,this.tileWidth,this.tileWidth);
+
+                }
+            }
+        }
+
         this.context.clearRect(x*this.tileWidth,y* this.tileWidth,this.tileWidth,this.tileWidth);
     }
 
@@ -381,6 +425,14 @@ export default class World {
     
 
     draw() {
+        this.updateCounter++;
+
+        if(this.updateCounter > 5) {
+            this.context.strokeStyle = `rgba(100, ${+Math.random()*255}, 255, 1)`;
+            this.context.strokeRect(this.tileWidth,this.tileWidth,this.tileWidth*(this.currentMap.length-2), this.tileWidth*(this.currentMap[0].length-2));
+            this.updateCounter = 0;
+        }
+
         this.game.context.drawImage(this.worldCanvas, 0, 0);
     }
 }

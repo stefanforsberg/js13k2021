@@ -9,8 +9,15 @@ window.onload = function()
 		}
 	}
 
-	Array.prototype.random = function() {
-		return this[Math.floor(Math.random()*this.length)];
+	Array.prototype.random = function(remove) {
+		const r = Math.floor(Math.random()*this.length);
+		const i = this[r];
+
+		if(remove) {
+			this.splice(r, 1)
+		}
+
+		return i;
 	}
 
 	

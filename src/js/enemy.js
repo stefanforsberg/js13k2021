@@ -2,6 +2,7 @@ import GameObject from "./gameObject";
 import Vector from "./vector";
 import {EnemyBullet} from "./bullet";
 import Item from "./items";
+import Timer from "./timer";
 
 class Enemy extends GameObject {
     constructor(game) {
@@ -13,6 +14,14 @@ class Enemy extends GameObject {
         this.removeable = true;
 
         this.game.items.push(new Item(this.game, new Vector(this.pos.x, this.pos.y)));
+    }
+
+    update(t) {
+        if(this.first) {
+            this.first = false;
+
+            this.game.timers.push(new Timer(this.coolDown, () => {this.canFire = true; }));
+        }
     }
 
     draw() {
@@ -50,20 +59,86 @@ class StationaryEnemy extends Enemy {
         this.radius = 15;
         this.coolDown = 2000 + (Math.random()*5000 | 0);
         this.canFire = false;
+        this.color = "#9f45b0";
+        this.first = true;
+    }
+
+    update(t) {
+        
+        super.update();
+
+        if(this.canFire) {
+            this.canFire = false;
+            this.game.timers.push(new Timer(this.coolDown, () => this.canFire = true));
+
+            const v = new Vector(-1+Math.random(2), -1+Math.random(2));
+            v.normalize();
+            v.scale(2,2);
+
+            this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), v))
+        }
+    }
+}
+
+class StationaryEnemyRapid extends Enemy {
+    constructor(game, x, y) {
+        super(game);
+        this.game = game;
+        this.pos = new Vector(x, y);
+        this.width = 15;
+        this.height = 15;
+        this.radius = 15;
+        this.coolDown = 4000 + (Math.random()*5000 | 0);
+        this.canFire = false;
         this.color = "#7649fe";
         this.first = true;
     }
 
+    randomVector() {
+        const v = new Vector(-1+2*Math.random(), -1+2*Math.random());
+        v.normalize();
+        v.scale(2,2);
+        return v;
+    }
+
     update() {
         
-        if(this.first) {
-            this.first = false;
-            setTimeout(() => this.canFire = true, this.coolDown);
-        }
+        super.update();
 
-        if(this.canFire && Math.random() > 0.98) {
+        if(this.canFire) {
             this.canFire = false;
-            setTimeout(() => this.canFire = true, this.coolDown);
+
+            this.game.timers.push(new Timer(this.coolDown, () => this.canFire = true));
+            this.game.timers.push(new Timer(100, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), this.randomVector())) ))
+            this.game.timers.push(new Timer(300, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), this.randomVector())) ))
+            this.game.timers.push(new Timer(500, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), this.randomVector())) ))
+            this.game.timers.push(new Timer(700, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), this.randomVector())) ))
+        }
+    }
+}
+
+class StationaryEnemySeeking extends Enemy {
+    constructor(game, x, y) {
+        super(game);
+        this.game = game;
+        this.pos = new Vector(x, y);
+        this.width = 15;
+        this.height = 15;
+        this.radius = 15;
+        this.coolDown = 2000 + (Math.random()*5000 | 0);
+        this.canFire = false;
+        this.color = "#94D0FF";
+        this.first = true;
+    }
+
+    update(t) {
+        
+        super.update(t);
+
+        if(this.canFire) {
+            this.canFire = false;
+            this.game.timers.push(new Timer(this.coolDown, () => this.canFire = true));
+
             
 
             const v = new Vector(this.game.ship.pos.x - this.pos.x, this.game.ship.pos.y - this.pos.y);
@@ -74,6 +149,7 @@ class StationaryEnemy extends Enemy {
         }
     }
 }
+
 
 class MovingEnemy extends Enemy {
     constructor(game, x, y) {
@@ -91,16 +167,14 @@ class MovingEnemy extends Enemy {
         this.maxVelMagnitude = 2;
     }
 
-    update() {
+    update(t) {
         
-        if(this.first) {
-            this.first = false;
-            setTimeout(() => this.canFire = true, this.coolDown);
-        }
+        super.update();
 
         if(this.canFire && Math.random() > 0.98) {
             this.canFire = false;
-            setTimeout(() => this.canFire = true, this.coolDown);
+            this.game.timers.push(new Timer(this.coolDown, () => this.canFire = true));
+
             
 
             const v = new Vector(this.game.ship.pos.x - this.pos.x, this.game.ship.pos.y - this.pos.y);
@@ -119,14 +193,11 @@ class MovingEnemy extends Enemy {
 
         this.pos.add(this.vel.x, this.vel.y);
     }
-
-
-
-    
 }
 
 export {
     Enemy, 
     StationaryEnemy,
+    StationaryEnemyRapid,
     MovingEnemy
 }

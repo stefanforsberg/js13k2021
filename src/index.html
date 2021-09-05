@@ -51,7 +51,7 @@
 
         .powerup.active {
             background-color: #989898;
-            filter: none;
+            filter: grayscale(0%);
         }
 
         @keyframes glow {
@@ -83,31 +83,16 @@
 
     <div id="hud" >^^ </div>
 
-    <!-- <div class="overlay" id="world" style="text-align: center; width: 80%; height: 75%; background-color: #000000dd; padding: 15px; display: block">
-        <h2 id="worldname"></h2>
-
-        <div id="worldlist">
-            
-        </div>
-            
-    </div> -->
-
-    <div class="overlay" id="menu" style="width: 80%; height: 75%; background-color: #000000dd; padding: 15px; ">
-        <h2><span style="color: grey">System</span> X9213-3223</h2>
-
-        <div id="powerups" style="display: grid; grid-template-columns: repeat(15, 1fr); grid-template-rows: repeat(5, 1fr); grid-column-gap: 1vw; grid-row-gap: 1vw;">
-            <div class="powerup">
-                🚀
+    <div class="overlay" id="menu" style="width: 100%; height: 100%; background-color: #000000dd; padding: 15px; display: none; justify-content: center; align-items: center;">
+        <div>
+            <div id="powerups" style="display: grid; grid-template-columns: repeat(10, 1fr); grid-template-rows: repeat(5, 1fr); grid-column-gap: 1vmin; grid-row-gap: 1vmin;">
             </div>
 
-            <div class="powerup active">
-                🚀
+            <div id="powerupcost" style="background-color: white; color: black; padding: 8px; text-align: center;"">
             </div>
 
-            <div class="powerup">
-                💨
+            <div id="powerupdesc" style="background-color: white; color: black; padding: 8px; text-align: center; visibility: hidden;">
             </div>
-            
         </div>
     </div>
 

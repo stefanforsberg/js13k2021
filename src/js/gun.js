@@ -1,6 +1,8 @@
 import GameObject from "./gameObject";
 import {PlayerBullet} from "./bullet";
 import Vector from "./vector";
+import Timer from "./timer";
+
 
 export default class Gun extends GameObject {
     constructor(game) {
@@ -35,7 +37,7 @@ export default class Gun extends GameObject {
             return;
         }
 
-        setTimeout(() => {this.canFire = true;}, this.cooldown)
+        this.game.timers.push(new Timer(this.cooldown, () => {this.canFire = true;}));
 
         this.canFire = false;
 
@@ -47,9 +49,9 @@ export default class Gun extends GameObject {
             v = new Vector(worldPos.x, worldPos.y);
             v.remove(ship.pos.x,ship.pos.y); 
             v.normalize()
-            v.scale(10,10)
+            v.scale(12,12)
         } else {
-            v = new Vector(10*Math.cos(ship.angle),10*Math.sin(ship.angle));
+            v = new Vector(12*Math.cos(ship.angle),12*Math.sin(ship.angle));
         }
         
         this.game.bullets.push(new PlayerBullet(this.game,new Vector(ship.pos.x, ship.pos.y), v, this.bulletLife))

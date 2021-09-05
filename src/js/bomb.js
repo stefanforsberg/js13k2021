@@ -1,5 +1,7 @@
 import GameObject from "./gameObject";
 import Vector from "./vector";
+import Timer from "./timer";
+
 
 export default class Bomb extends GameObject {
     constructor(game) {
@@ -8,7 +10,6 @@ export default class Bomb extends GameObject {
         this.cooldown = 1000;
 
         this.canFire = true;
-        this.size = 3;
 
         
 
@@ -25,10 +26,8 @@ export default class Bomb extends GameObject {
 
         this.game.camera.shake(300);
 
+        this.game.timers.push(new Timer(this.cooldown, () => {console.log("cb"); this.canFire = true; this.bombing = false}));
 
-        setTimeout(() => {this.canFire = true; this.bombing = false}, this.cooldown)
-
-        console.log("fireing bomb")
         this.pos = new Vector(ship.pos.x, ship.pos.y);
 
 

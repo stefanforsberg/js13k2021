@@ -28,7 +28,7 @@ export default class Sounds {
         }
 
         if(this.player.generate() < 1) {
-            setTimeout(() => this.load(cb), 500);
+            setTimeout(() => this.load(cb), 200);
             return;
         } else {
             const wave = this.player.createWave();

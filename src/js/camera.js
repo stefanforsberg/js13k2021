@@ -1,5 +1,8 @@
+import Timer from "./timer";
+
 export default class Camera {
-    constructor(context, settings) {
+    constructor(context, game, settings) {
+        this.game = game;
         settings = settings || {};
         this.distance = 1000.0;
         this.lookAt = [0, 0];
@@ -66,7 +69,7 @@ export default class Camera {
 
         this.shaking = true;
 
-        setTimeout(() => this.shaking = false, duration);
+        this.game.timers.push(new Timer(duration, () => this.shaking = false));
     }
 
     moveTo(x, y) {

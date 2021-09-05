@@ -2,6 +2,7 @@ import Bomb from "./bomb";
 import GameObject from "./gameObject";
 import Gun from "./gun";
 import Vector from "./vector"
+import Timer from "./timer";
 
 class Particle extends GameObject {
     constructor(game, pos, vel) {
@@ -47,7 +48,7 @@ export default class Ship extends GameObject {
         this.height = 20;
         this.maxVelMagnitude = 4;
         this.pickupRadius = 100;
-        this.life = 1;
+        this.life = 5;
         this.radius = 20;
         
         this.invulCooldown = 5000;
@@ -123,8 +124,8 @@ export default class Ship extends GameObject {
             this.isInvul = true;
             this.canInvulv = false;
             
-            setTimeout(() => this.isInvul = false, this.invulPeriod);
-            setTimeout(() => this.canInvulv = true, this.invulCooldown);
+            this.game.timers.push(new Timer(this.invulPeriod, () => this.isInvul = false));
+            this.game.timers.push(new Timer(this.invulCooldown, () => this.canInvulv = true));
 
         }
 
