@@ -12,6 +12,17 @@ const Generator = {
     worldHeight: 15,
 
     generateMap: function(w, h) {
+
+        console.log("generateMap: " + w);
+
+        if(w) {
+            this.worldWidth = w;
+        }
+        if(h) {
+            this.worldHeight = h;
+        }
+
+
         var map = [[]];
         // randomly scatter solid blocks
         this.initialiseMap(map);
@@ -20,17 +31,7 @@ const Generator = {
             map = this.step(map);
         }
 
-        console.log("w: " + w)
 
-        if(w) {
-            console.log("setting w")
-            this.worldWidth = w;
-        }
-        if(h) {
-            this.worldHeight = h;
-        }
-
-        console.log(this.worldWidth + ";" + this.worldHeight)
 
         return map;
     },
@@ -114,15 +115,15 @@ const Generator = {
 }
 
 class WorldParticle extends GameObject {
-    constructor(game, pos, color) {
+    constructor(game, pos, color, alpha, size) {
         super(game);
         this.pos = pos;
         this.vel = new Vector(-1+2*Math.random(),-1+2*Math.random());
         this.vel.normalize();
         this.vel.scale(0.1, 0.1 );
-        this.width = Math.round(Math.random()*75);
-        this.height = Math.round(Math.random()*75);
-        this.alpha = 1;
+        this.width = Math.round(Math.random()*(size ?? 75));
+        this.height = Math.round(Math.random()*(size ?? 75));
+        this.alpha = alpha ?? 1;
         this.color = `${color.r},${color.g},${color.b}`
     }
 
@@ -163,17 +164,21 @@ export default class World {
 
     generateNew(w, h) {
 
+        console.log("Generating new map: " + w);
+
         this.updateCounter = 0;
+        this.deg = Math.random()*360 | 0;
         this.currentMap = Generator.generateMap(w, h);
+
+        this.tileWidth = 50;
         
-        this.worldCanvas.width = this.currentMap.length*100;
-        this.worldCanvas.height = this.currentMap[0].length*100;
+        this.worldCanvas.width = this.currentMap.length*this.tileWidth;
+        this.worldCanvas.height = this.currentMap[0].length*this.tileWidth;
 
         this.context.clearRect(0,0, this.worldCanvas.width,this.worldCanvas.height);
         
         this.emptyPositions = [];
 
-        this.tileWidth = 50;
 
         const r = (100+Math.random()*100)| 0;
         const g = (100+Math.random()*100)| 0;
@@ -232,7 +237,7 @@ export default class World {
 
         this.starColors = ["255,255,255", "57,190,255", "170, 172, 217", "255,255,0"]
 
-        this.bgCanvas.style.backgroundImage = `linear-gradient(black, rgba(${Math.random()*40 | 0},${Math.random()*40 | 0},${Math.random()*40 | 0},1))`;
+        this.bgCanvas.style.backgroundImage = `linear-gradient(${Math.random()*360 | 0}deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0) 36%, rgba(${r},${g},${b},${0.5 + Math.random()*0.1}) 52%, rgba(0,0,0,0) 65%, rgba(61,114,255,0) 100%), linear-gradient(black, rgba(${Math.random()*40 | 0},${Math.random()*40 | 0},${Math.random()*40 | 0},1))`;
 
 
         this.width = this.currentMap.length*this.tileWidth;
@@ -254,7 +259,7 @@ export default class World {
 
             if(Math.random() > 0.97) {
                 this.bgContext.fillStyle = `rgba(255,255,255,${0.15*Math.random()})`;
-                this.bgContext.fillText("🌌", Math.random()*this.bgCanvas.width | 0, Math.random()*this.bgCanvas.height)
+                this.bgContext.fillText("✨", Math.random()*this.bgCanvas.width | 0, Math.random()*this.bgCanvas.height)
             }
 
             if(Math.random() > 0.94) {
@@ -266,11 +271,12 @@ export default class World {
         }
 
         this.portalPos = this.getEmptyPos();
-        this.context.fillStyle = `rgba(255,255,255,1)`;
-        this.context.fillRect(this.portalPos.x-this.tileWidth/2,this.portalPos.y-this.tileWidth/2,this.tileWidth,this.tileWidth);
+        
+
+        // this.context.fillStyle = `rgba(255,255,255,1)`;
+        // this.context.fillRect(this.portalPos.x-this.tileWidth/2,this.portalPos.y-this.tileWidth/2,this.tileWidth,this.tileWidth);
 
         this.currentMap[this.portalPos.xPos][this.portalPos.yPos] = 3;
-
 
         
     }
@@ -351,7 +357,6 @@ export default class World {
 
         for(let xx = -1; xx <= 1; xx++) {
             for(let yy = -1; yy<= 1; yy++) {
-                console.log(this.getCurrent(x+xx,y+yy))
                 if(this.getCurrent(x+xx,y+yy) === 0) {
                     this.context.clearRect((x+xx)*this.tileWidth,(y+yy)* this.tileWidth,this.tileWidth,this.tileWidth);
 
@@ -428,10 +433,24 @@ export default class World {
         this.updateCounter++;
 
         if(this.updateCounter > 5) {
-            this.context.strokeStyle = `rgba(100, ${+Math.random()*255}, 255, 1)`;
+            this.context.strokeStyle = `rgba(40, ${100+Math.random()*150}, 255, 1)`;
             this.context.strokeRect(this.tileWidth,this.tileWidth,this.tileWidth*(this.currentMap.length-2), this.tileWidth*(this.currentMap[0].length-2));
             this.updateCounter = 0;
+
+            // this.context.clearRect(this.portalPos.x-this.tileWidth/2,this.portalPos.y-this.tileWidth/2,this.tileWidth,this.tileWidth);
+  
+            
+
+            // this.context.fillStyle = "rgba(255,0,255,1)"
+            // this.context.fillRect(this.portalPos.x-this.tileWidth/2,this.portalPos.y-this.tileWidth/2,this.tileWidth,this.tileWidth);
+
+        } else if(this.updateCounter % 2 === 0) {
+            this.game.particles.push(new WorldParticle(this.game, new Vector(this.portalPos.x, this.portalPos.y), {r: Math.random()*30|0, g: 100 + Math.random()*150|0, b: 255}, 0.3+Math.random(),75 + Math.random()*25 | 0));
         }
+
+
+
+        
 
         this.game.context.drawImage(this.worldCanvas, 0, 0);
     }

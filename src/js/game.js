@@ -27,6 +27,8 @@ export default class Game {
             this.handleKey(e, false);
         }
 
+        this.levelsCompleted = 0;
+
         this.camera = new Camera(this.context, this);
 
         this.collision = new Collision(this);
@@ -45,9 +47,15 @@ export default class Game {
 
         this.hud.drawTitle("Loading")
 
+        this.loading = true;
+
         this.sounds.load(() => { 
             
-            this.startLevel()
+            this.loading = false;
+
+            this.hud.drawTitle(`Move foward with [W], turn with [A] and [D].<br> Fire gun with [SPACEBAR], bomb with [Q] and use shield with [F]<br>Collect minerals and use [TAB] to buy powerups.`)
+
+            // this.startLevel();
         })
     }
 
@@ -79,7 +87,9 @@ export default class Game {
         this.items = [];
         this.timers = [];
 
-        this.world.generateNew((30 + 40*Math.random() | 0), (30 + 40*Math.random() | 0));
+        
+
+        this.world.generateNew((15 + (this.levelsCompleted*2)*Math.random() | 0), (15 + (this.levelsCompleted*2 )*Math.random() | 0));
 
         const worldName = `${Math.random().toString(26).substring(2, 8)}-${Math.random().toString(36).substring(3, 4)}-${Math.random().toString(9).substring(2, 5)}`.toUpperCase();
         this.hud.addWorld(worldName, `rgba(${this.world.baseColor.r},${this.world.baseColor.g},${this.world.baseColor.b},1)`);
@@ -89,15 +99,35 @@ export default class Game {
         } else {
             this.hud.drawTitle(`Welcome. Find your purpose.<br><br>Next system is <span style="font-weight: bold; color: rgba(${this.world.baseColor.r},${this.world.baseColor.g},${this.world.baseColor.b},1)">${worldName}</span>`)
         }
-        
 
         const playerStartPos = this.world.getEmptyPos();
 
-        for(var i = 0; i < 10; i++) {
+        let monsterCount = ((ep) => { 
+            console.log("ep: " + ep)
+            if(ep < 200) return (2 + this.levelsCompleted);
+            if(ep < 300) return (5 + this.levelsCompleted);
+            if(ep < 450) return (8 + this.levelsCompleted);
+            if(ep < 500) return (12 + this.levelsCompleted);
+            if(ep < 600) return (15 + this.levelsCompleted);
+            return (22 + this.levelsCompleted);
+        })(this.world.emptyPositions.length);
+
+        console.log("Free pos: " + this.world.emptyPositions.length + " . Monsters: " + monsterCount)
+
+        for(var i = 0; i < monsterCount; i++) {
             let pos = this.world.getEmptyPos();
             
 
-            this.enemies.push(new Enemy.StationaryEnemyRapid(this, pos.x, pos.y));
+            if(Math.random() > 0.95 - this.levelsCompleted/10) {
+                this.enemies.push(new Enemy.MovingEnemy(this, pos.x, pos.y));
+            }  else if(Math.random() > 0.8 - this.levelsCompleted/10) {
+                this.enemies.push(new Enemy.StationaryEnemyRapid(this, pos.x, pos.y));
+            }  else {
+                this.enemies.push(new Enemy.StationaryEnemy(this, pos.x, pos.y));
+            }
+
+
+            
 
             // if(Math.random() > 0.8) {
             //     this.enemies.push(new Enemy.MovingEnemy(this, pos.x, pos.y));
@@ -112,16 +142,23 @@ export default class Game {
 
         this.camera.setWorldSize(this.world.width, this.world.height)
 
-        this.camera.zoomTo(1200 + (this.canvas.width-1200) );
+        this.camera.zoomTo(1200 + (this.canvas.width-1200)/2 );
 
         this.updateFromPowerups();
 
         this.camera.moveTo(this.ship.pos.x,this.ship.pos.y); 
 
+        this.camera.begin();
         this.world.draw();
+        this.camera.end();
+
     }
 
     startPlaying() {
+        if(this.loading) {
+            return;
+        }
+
         this.hud.hideTitle();
         this.running = true;
         window.requestAnimationFrame((t) => this.draw(t));
@@ -139,6 +176,8 @@ export default class Game {
 
     endGame() {
         this.running = false;
+
+        this.levelsCompleted = 0;
 
         this.hud.mineral = (this.hud.mineral + this.powerup.spent) / 2 | 0;
         this.hud.draw();
@@ -158,6 +197,7 @@ export default class Game {
         this.startTime = t;
 
         if(this.queueRestart) {
+            this.levelsCompleted++;
             console.log("queue restart")
             this.startLevel();
             return;

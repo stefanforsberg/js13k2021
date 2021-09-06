@@ -109,7 +109,7 @@ export default class Powerup {
     setBase() {
         this.powerUpsSettings = {
             s: {
-                maxVelocity: 3
+                maxVelocity: 2
             },
             b: {
                 size: 1

@@ -46,7 +46,7 @@ export default class Ship extends GameObject {
         this.bomb = new Bomb(game);
         this.width = 30;
         this.height = 20;
-        this.maxVelMagnitude = 4;
+        this.maxVelMagnitude = 1;
         this.pickupRadius = 100;
         this.life = 5;
         this.radius = 20;
@@ -116,8 +116,9 @@ export default class Ship extends GameObject {
         this.game.world.collidesShip(this);
 
         if(this.vel.magnitude() > this.maxVelMagnitude) {
+            console.log("max vel: " + this.vel.magnitude() + " ,:_::" + this.maxVelMagnitude)
             this.vel.normalize();
-            this.vel.scaleRound(this.maxVelMagnitude, 0)
+            this.vel.scale(this.maxVelMagnitude, this.maxVelMagnitude)
         };
 
         if(this.invul && this.canInvulv && !this.isInvul) {

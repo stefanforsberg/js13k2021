@@ -156,7 +156,8 @@ class MovingEnemy extends Enemy {
         super(game);
         this.game = game;
         this.pos = new Vector(x, y);
-        this.vel = new Vector(1,1);
+        this.vel = new Vector(-1 + 2*Math.random(), -1 + 2*Math.random());
+        this.vel.normalize();
         this.width = 15;
         this.height = 15;
         this.radius = 15;
