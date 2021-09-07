@@ -54,12 +54,12 @@ class StationaryEnemy extends Enemy {
         super(game);
         this.game = game;
         this.pos = new Vector(x, y);
-        this.width = 15;
-        this.height = 15;
+        this.width =  30;
+        this.height = 30;
         this.radius = 15;
         this.coolDown = 2000 + (Math.random()*5000 | 0);
         this.canFire = false;
-        this.color = "#9f45b0";
+        this.color = "#c6849b";
         this.first = true;
     }
 
@@ -78,6 +78,24 @@ class StationaryEnemy extends Enemy {
             this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), v))
         }
     }
+
+    draw() {
+        this.game.context.save();
+        this.game.context.shadowBlur = 20 ;
+        this.game.context.shadowColor = "#fff";
+
+        this.game.context.translate(this.pos.x | 0, this.pos.y | 0)
+
+        this.game.context.fillStyle = this.color;
+        this.game.context.beginPath();
+        this.game.context.moveTo(-this.width/2, this.height/2);
+        this.game.context.lineTo(0, -this.height/2);
+        this.game.context.lineTo(this.width/2, this.height/2);
+        this.game.context.closePath();
+        this.game.context.fill();
+        
+        this.game.context.restore();
+    }
 }
 
 class StationaryEnemyRapid extends Enemy {
@@ -85,12 +103,12 @@ class StationaryEnemyRapid extends Enemy {
         super(game);
         this.game = game;
         this.pos = new Vector(x, y);
-        this.width = 15;
-        this.height = 15;
-        this.radius = 15;
+        this.width = 30;
+        this.height = 30;
+        this.radius = 20;
         this.coolDown = 4000 + (Math.random()*5000 | 0);
         this.canFire = false;
-        this.color = "#7649fe";
+        this.color = "#fbe0c2";
         this.first = true;
     }
 
@@ -114,6 +132,24 @@ class StationaryEnemyRapid extends Enemy {
             this.game.timers.push(new Timer(500, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), this.randomVector())) ))
             this.game.timers.push(new Timer(700, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), this.randomVector())) ))
         }
+    }
+
+    draw() {
+        this.game.context.save();
+        this.game.context.shadowBlur = 20 ;
+        this.game.context.shadowColor = "#fff";
+
+        this.game.context.translate(this.pos.x | 0, this.pos.y | 0)
+
+        this.game.context.fillStyle = this.color;
+        this.game.context.beginPath();
+        this.game.context.moveTo(-this.width/2, -this.height/2);
+        this.game.context.lineTo(0, +this.height/2);
+        this.game.context.lineTo(this.width/2, -this.height/2);
+        this.game.context.closePath();
+        this.game.context.fill();
+        
+        this.game.context.restore();
     }
 }
 

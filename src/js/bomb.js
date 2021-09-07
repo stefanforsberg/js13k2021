@@ -7,11 +7,9 @@ export default class Bomb extends GameObject {
     constructor(game) {
         super(game);
 
-        this.cooldown = 1000;
+        this.cooldown = 5000;
 
         this.canFire = true;
-
-        
 
     }
 
@@ -26,7 +24,7 @@ export default class Bomb extends GameObject {
 
         this.game.camera.shake(300);
 
-        this.game.timers.push(new Timer(this.cooldown, () => {console.log("cb"); this.canFire = true; this.bombing = false}));
+        this.game.timers.push(new Timer(this.cooldown, () => {this.canFire = true; this.bombing = false}));
 
         this.pos = new Vector(ship.pos.x, ship.pos.y);
 
@@ -54,8 +52,6 @@ export default class Bomb extends GameObject {
             if(this.bombArea.counter < 100) {
                 let size = this.bombArea.counter*2;
                 
-                // this.game.context.fillRect(this.bombArea.startX - this.bombArea.counter, this.bombArea.startY  - this.bombArea.counter, size, size)    
-
                 this.game.context.beginPath();
                 this.game.context.fillStyle = `rgba(255,232,8,${0.9-(this.bombArea.counter/100)})`
                 this.game.context.arc(this.bombArea.startX, this.bombArea.startY, size, 0, 2 * Math.PI);

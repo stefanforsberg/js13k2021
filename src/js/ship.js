@@ -116,7 +116,6 @@ export default class Ship extends GameObject {
         this.game.world.collidesShip(this);
 
         if(this.vel.magnitude() > this.maxVelMagnitude) {
-            console.log("max vel: " + this.vel.magnitude() + " ,:_::" + this.maxVelMagnitude)
             this.vel.normalize();
             this.vel.scale(this.maxVelMagnitude, this.maxVelMagnitude)
         };

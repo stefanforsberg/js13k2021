@@ -162,13 +162,35 @@ export default class World {
         return this.emptyPositions.random(true);
     }
 
-    generateNew(w, h) {
+    generateBossWorld() {
+        const size = 15;
+        const newMap = [[]];
+        for(let x = 0; x < size; x++) {
+            newMap[x] = [];
+            for(let y = 0; y < size; y++) {
+                if(x === 0 || y === 0 || x === (size-1) || y === (size-1)) {
+                    newMap[x][y] = 2;
+                } else {
+                    newMap[x][y] = 0;
+                }
+            }
+        }
+        return newMap;
+    }
+
+    generateNew(w, h, boss) {
 
         console.log("Generating new map: " + w);
 
         this.updateCounter = 0;
         this.deg = Math.random()*360 | 0;
-        this.currentMap = Generator.generateMap(w, h);
+        
+        if(boss) {
+            this.currentMap = this.generateBossWorld();
+
+        } else {
+            this.currentMap = Generator.generateMap(w, h);
+        }
 
         this.tileWidth = 50;
         
@@ -270,19 +292,32 @@ export default class World {
             this.bgContext.restore();
         }
 
-        this.portalPos = this.getEmptyPos();
+        
         
 
         // this.context.fillStyle = `rgba(255,255,255,1)`;
         // this.context.fillRect(this.portalPos.x-this.tileWidth/2,this.portalPos.y-this.tileWidth/2,this.tileWidth,this.tileWidth);
 
-        this.currentMap[this.portalPos.xPos][this.portalPos.yPos] = 3;
+        if(boss) {
+        } else {
+            
+            this.addPortal();
+        }
+
+
 
         
     }
 
+    addPortal() {
+        this.portalPos = this.getEmptyPos();
+        this.currentMap[this.portalPos.xPos][this.portalPos.yPos] = 3;
+    }
+
     update() {
-        this.bgCanvas.style.filter = `blur(${Math.abs(this.game.ship.vel.x) | 0}px)`;
+        if(this.game.zoomDone) {
+            this.bgCanvas.style.filter = `blur(${Math.abs(this.game.ship.vel.x) | 0}px)`;
+        }
     }
 
     getCurrent(x, y) {
@@ -444,7 +479,7 @@ export default class World {
             // this.context.fillStyle = "rgba(255,0,255,1)"
             // this.context.fillRect(this.portalPos.x-this.tileWidth/2,this.portalPos.y-this.tileWidth/2,this.tileWidth,this.tileWidth);
 
-        } else if(this.updateCounter % 2 === 0) {
+        } else if(this.portalPos && this.updateCounter % 2 === 0) {
             this.game.particles.push(new WorldParticle(this.game, new Vector(this.portalPos.x, this.portalPos.y), {r: Math.random()*30|0, g: 100 + Math.random()*150|0, b: 255}, 0.3+Math.random(),75 + Math.random()*25 | 0));
         }
 

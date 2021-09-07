@@ -4,21 +4,13 @@ export default class Hud {
         this.e = document.getElementById("hud");
         this.worldElement = document.getElementById("world");
         this.worldListElement = document.getElementById("worldlist");
-        this.mineral = 0;
+        this.mineral = 1000;
         this.spentMineral = 0;
 
         this.title = document.getElementById("title");
         this.titleText = document.getElementById("titleText");
 
         this.worldList = [];
-
-        this.title.addEventListener("click", () => {
-            if(this.showing) {
-                this.game.startPlaying();
-            }
-        })
-
-        
     }
 
     increaseMineral(a) {
@@ -44,7 +36,6 @@ export default class Hud {
 
     hideTitle()
     {
-        console.log("hide title")
         this.showing = false;
         this.title.style.display = 'none';
         this.game.titleVisible = false;

@@ -30,11 +30,11 @@ export default class Powerup {
 
             document.querySelectorAll(".powerup").forEach(e => {
                 
-                
+                    console.log("pw");
+                    
                     e.addEventListener("click", () => {
 
                         if(!e.classList.contains("active")) {
-
 
                             if(this.game.hud.mineral >= this.nextCost) {
                                 e.classList.toggle("active");
@@ -46,14 +46,8 @@ export default class Powerup {
                                 this.game.hud.increaseMineral(-this.nextCost);
 
                                 this.upgradeCost();
-
-                                
                             }
                             
-                            
-
-                            
-
                         }
                     })
                 
@@ -84,37 +78,43 @@ export default class Powerup {
     }
 
     upgradeCost() {
-        this.nextCost = this.powerups.filter((p) => p.a).length + 1;
+        const current = this.powerups.filter((p) => p.a).length;
+        this.nextCost = current*current*0.5 | 0;
 
         this.powerupcost.innerHTML = `Next upgrade ${this.nextCost} (inventory ${this.game.hud.mineral})`
     }
 
     reset() {
-        this.powerups = [
-            {i:"💨", d:"+max speed", a: false, f: (p) => p.s.maxVelocity++},
-            {i:"💨", d:"+max speed", a: false, f: (p) => p.s.maxVelocity++},
-            {i:"💣", d:"+bomb area", a: false, f: (p) => p.b.size+=1},
-            {i:"💣", d:"+bomb area", a: false, f: (p) => p.b.size+=1},
-            {i:"💣", d:"+bomb area", a: false, f: (p) => p.b.size+=1},
-            {i:"🔫", d:"+bullets", a: false, f: (p) => p.g.bullets+=1},
-            {i:"🔫", d:"+bullets", a: false, f: (p) => p.g.bullets+=1},
-            {i:"🔫", d:"+bullets", a: false, f: (p) => p.g.bullets+=1},
-            {i:"🔫", d:"+aim with mouse", a: false, f: (p) => p.g.mouseAim=true},
-            {i:"🔫", d:"+bullet penetration", a: false, f: (p) => p.g.bulletLife+=1},
-            {i:"🔫", d:"+bullet penetration", a: false, f: (p) => p.g.bulletLife+=1},
-            {i:"🔫", d:"+bullet penetration", a: false, f: (p) => p.g.bulletLife+=1},
-        ]
+
+        this.powerups = [];
+        this.powerups.push(...Array(5).fill().map(_ => {return {i:"💨", d:"+max speed", a: false, f: (p) => p.s.maxVelocity+=0.4}}))
+        this.powerups.push(...Array(5).fill().map(_ => {return {i:"💣", d:"+bomb area", a: false, f: (p) => p.b.size+=1}}))
+        this.powerups.push(...Array(5).fill().map(_ => {return {i:"💣", d:"-bomb cooldown", a: false, f: (p) => p.b.cooldown-=500}}))
+        this.powerups.push(...Array(4).fill().map(_ => {return {i:"🔫", d:"+bullets fired", a: false, f: (p) => p.g.bullets+=1}}))
+        this.powerups.push(...Array(5).fill().map(_ => {return {i:"🔫", d:"-gun cooldown", a: false, f: (p) => p.g.cooldown-=100}}))
+        this.powerups.push(...Array(3).fill().map(_ => {return {i:"🔫", d:"+bullet piercing", a: false, f: (p) => p.g.bulletLife+=1}}))
+        this.powerups.push(...Array(5).fill().map(_ => {return {i:"🧲", d:"+pickup radius", a: false, f: (p) => p.s.pickupRadius+=20}}))
+        this.powerups.push(...Array(5).fill().map(_ => {return {i:"🛡️", d:"+shield duration", a: false, f: (p) => p.s.shieldDuration+=100}}))
+        this.powerups.push(...Array(5).fill().map(_ => {return {i:"🛡️", d:"+shield cooldown", a: false, f: (p) => p.s.shieldCooldown-=500}}))
+        this.powerups.push({i:"🔫", d:"+aim with mouse", a: false, f: (p) => p.g.mouseAim=true});
+
+        
     }
 
     setBase() {
         this.powerUpsSettings = {
             s: {
-                maxVelocity: 2
+                maxVelocity: 2,
+                pickupRadius: 50,
+                shieldDuration: 2000,
+                shieldCooldown: 5000
             },
             b: {
-                size: 1
+                size: 1,
+                cooldown: 5000,
             },
             g: {
+                cooldown: 700,
                 mouseAim: false,
                 bullets: 1,
                 bulletLife: 0

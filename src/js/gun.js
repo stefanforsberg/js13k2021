@@ -10,21 +10,13 @@ export default class Gun extends GameObject {
 
         this.pos = new Vector(0,0);
 
-        this.bullets = [];
-
         this.bulletsFired = 1;
 
-        this.cooldown = 300;
+        this.cooldown = 600;
         this.canFire = true;
         this.canBomb = true;
 
         this.bulletLife = 0;
-
-        this.bomb = {
-            size: 3
-        }
-
-        this.bombCooldown = 10000;
 
         document.addEventListener('mousemove', (event) => {
             this.pos.x = event.clientX;

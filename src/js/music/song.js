@@ -506,7 +506,56 @@
       numChannels: 1  // Number of channels
     };
 
+    var sfxTel = {
+      songData: [
+        { // Instrument 0
+          i: [
+          2, // OSC1_WAVEFORM
+          138, // OSC1_VOL
+          116, // OSC1_SEMI
+          0, // OSC1_XENV
+          0, // OSC2_WAVEFORM
+          138, // OSC2_VOL
+          128, // OSC2_SEMI
+          4, // OSC2_DETUNE
+          0, // OSC2_XENV
+          116, // NOISE_VOL
+          47, // ENV_ATTACK
+          48, // ENV_SUSTAIN
+          162, // ENV_RELEASE
+          63, // ENV_EXP_DECAY
+          124, // ARP_CHORD
+          6, // ARP_SPEED
+          0, // LFO_WAVEFORM
+          99, // LFO_AMT
+          6, // LFO_FREQ
+          1, // LFO_FX_FREQ
+          3, // FX_FILTER
+          64, // FX_FREQ
+          160, // FX_RESONANCE
+          4, // FX_DIST
+          48, // FX_DRIVE
+          147, // FX_PAN_AMT
+          4, // FX_PAN_FREQ
+          121, // FX_DELAY_AMT
+          4 // FX_DELAY_TIME
+          ],
+          // Patterns
+          p: [1],
+          // Columns
+          c: [
+            {n: [123],
+             f: []}
+          ]
+        },
+      ],
+      rowLen: 5513,   // In sample lengths
+      patternLen: 16,  // Rows per pattern
+      endPattern: 0,  // End pattern
+      numChannels: 1  // Number of channels
+    };
+
 
     export {
-        song, sfxHit
+        song, sfxHit, sfxTel
     }
