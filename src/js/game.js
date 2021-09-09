@@ -40,7 +40,7 @@ export default class Game {
 
         this.running = true;
 
-        this.debug = true;
+        this.debug = false;
 
         this.world = new World(this);
 
@@ -73,11 +73,14 @@ export default class Game {
 
         this.context.clearRect(0, 0, canvas.width, canvas.height);
 
-        this.sounds.playSong(0);
+        
+        this.sounds.fade(3,0);
+        
         
         this.running = false;
         this.queueRestart = false;
-        this.ship = new Ship(this);
+
+        this.ship = new Ship(this, this.ship ? this.ship.life : 5);
         
         this.bullets = [];
         this.enemyBullets = [];
@@ -88,7 +91,7 @@ export default class Game {
 
         this.zoomDone = false;
 
-        this.boss = true;
+        this.boss = this.levelsCompleted > 0 && this.levelsCompleted % 4 === 0;
 
         this.world.generateNew((15 + (this.levelsCompleted*2)*Math.random() | 0), (15 + (this.levelsCompleted*2 )*Math.random() | 0), this.boss);
 
@@ -104,7 +107,12 @@ export default class Game {
             this.hud.drawTitle(`Survival. Find your purpose.<br><br>Next system is <span style="font-weight: bold; color: rgba(${this.world.baseColor.r},${this.world.baseColor.g},${this.world.baseColor.b},1)">${worldName}</span><br><br>[SPACEBAR] to begin.`)
         }
 
-        const playerStartPos = this.world.getEmptyPos();
+        if(this.boss) {
+
+        } else {
+
+        }
+        const playerStartPos = this.boss ? {x: 500, y: 500} : this.world.getEmptyPos();
 
         if(this.boss) {
             this.enemies.push(new Boss(this));
@@ -160,6 +168,11 @@ export default class Game {
             return;
         }
 
+        this.sounds.fade(0,3);
+
+
+        this.hud.reset();
+
         this.hud.hideTitle();
         this.running = true;
         window.requestAnimationFrame((t) => this.draw(t));
@@ -187,6 +200,8 @@ export default class Game {
 
         this.hud.mineral = (this.hud.mineral + this.powerup.spent) / 2 | 0;
         this.hud.draw();
+
+        this.ship.life = 5;
 
         this.powerup.reset();
 

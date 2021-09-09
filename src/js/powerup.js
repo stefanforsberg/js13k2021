@@ -91,7 +91,7 @@ export default class Powerup {
         this.powerups.push(...Array(5).fill().map(_ => {return {i:"💣", d:"+bomb area", a: false, f: (p) => p.b.size+=1}}))
         this.powerups.push(...Array(5).fill().map(_ => {return {i:"💣", d:"-bomb cooldown", a: false, f: (p) => p.b.cooldown-=500}}))
         this.powerups.push(...Array(4).fill().map(_ => {return {i:"🔫", d:"+bullets fired", a: false, f: (p) => p.g.bullets+=1}}))
-        this.powerups.push(...Array(5).fill().map(_ => {return {i:"🔫", d:"-gun cooldown", a: false, f: (p) => p.g.cooldown-=100}}))
+        this.powerups.push(...Array(5).fill().map(_ => {return {i:"🔫", d:"-gun cooldown", a: false, f: (p) => p.g.cooldown-=50}}))
         this.powerups.push(...Array(3).fill().map(_ => {return {i:"🔫", d:"+bullet piercing", a: false, f: (p) => p.g.bulletLife+=1}}))
         this.powerups.push(...Array(5).fill().map(_ => {return {i:"🧲", d:"+pickup radius", a: false, f: (p) => p.s.pickupRadius+=20}}))
         this.powerups.push(...Array(5).fill().map(_ => {return {i:"🛡️", d:"+shield duration", a: false, f: (p) => p.s.shieldDuration+=100}}))
@@ -114,7 +114,7 @@ export default class Powerup {
                 cooldown: 5000,
             },
             g: {
-                cooldown: 700,
+                cooldown: 400,
                 mouseAim: false,
                 bullets: 1,
                 bulletLife: 0

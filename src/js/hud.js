@@ -10,6 +10,9 @@ export default class Hud {
         this.title = document.getElementById("title");
         this.titleText = document.getElementById("titleText");
 
+        this.bomb = document.getElementById("hudBomb")
+        this.shield = document.getElementById("hudShield")
+
         this.worldList = [];
     }
 
@@ -32,6 +35,9 @@ export default class Hud {
         this.title.style.display = "flex";
         this.titleText.innerHTML = t;
         this.game.titleVisible = true;
+
+        this.bomb.style.display = 'none'
+        this.shield.style.display = 'none'
     }
 
     hideTitle()
@@ -40,10 +46,27 @@ export default class Hud {
         this.title.style.display = 'none';
         this.game.titleVisible = false;
 
+        this.bomb.style.display = 'block'
+        this.shield.style.display = 'block'
+
+
     }
 
     addWorld(world, color) {
         this.worldList.push({world, color});
+    }
+
+    toggleBomb() {
+        this.bomb.classList.toggle("active");
+    }
+
+    toggleShield() {
+        this.shield.classList.toggle("active");
+    }
+
+    reset() {
+        this.bomb.classList.add("active");
+        this.shield.classList.add("active");
     }
 
 

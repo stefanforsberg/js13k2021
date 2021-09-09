@@ -18,13 +18,17 @@ export default class Bomb extends GameObject {
             return;
         }
 
+        this.game.hud.toggleBomb();
+
+
         this.bombing = true;
         this.canFire = false;
 
 
         this.game.camera.shake(300);
 
-        this.game.timers.push(new Timer(this.cooldown, () => {this.canFire = true; this.bombing = false}));
+        
+        this.game.timers.push(new Timer(this.cooldown, () => {this.canFire = true; this.bombing = false; this.game.hud.toggleBomb(); }));
 
         this.pos = new Vector(ship.pos.x, ship.pos.y);
 

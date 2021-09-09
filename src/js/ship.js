@@ -36,7 +36,9 @@ class Particle extends GameObject {
 }
 
 export default class Ship extends GameObject {
-    constructor(game) {
+    constructor(game, life) {
+
+        console.log("creating new ship: " + life)
         super(game);
         this.angle = 0;
         this.left = false;
@@ -48,7 +50,7 @@ export default class Ship extends GameObject {
         this.height = 20;
         this.maxVelMagnitude = 1;
         this.pickupRadius = 100;
-        this.life = 5;
+        this.life = life ?? 5;
         this.radius = 20;
         
         this.invulCooldown = 5000;
@@ -78,6 +80,10 @@ export default class Ship extends GameObject {
         if(code === 70) {
             this.invul = pressed;
         }
+    }
+
+    reset() {
+
     }
 
     hit() {
@@ -121,11 +127,12 @@ export default class Ship extends GameObject {
         };
 
         if(this.invul && this.canInvulv && !this.isInvul) {
+            this.game.hud.toggleShield();
             this.isInvul = true;
             this.canInvulv = false;
             
             this.game.timers.push(new Timer(this.invulPeriod, () => this.isInvul = false));
-            this.game.timers.push(new Timer(this.invulCooldown, () => this.canInvulv = true));
+            this.game.timers.push(new Timer(this.invulCooldown, () => {this.canInvulv = true; this.game.hud.toggleShield();}));
 
         }
 

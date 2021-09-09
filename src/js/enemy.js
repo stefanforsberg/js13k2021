@@ -61,6 +61,7 @@ class StationaryEnemy extends Enemy {
         this.canFire = false;
         this.color = "#c6849b";
         this.first = true;
+        this.angle = 0;
     }
 
     update(t) {
@@ -77,14 +78,17 @@ class StationaryEnemy extends Enemy {
 
             this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), v))
         }
+
+        this.angle+=0.05;
     }
 
     draw() {
         this.game.context.save();
         this.game.context.shadowBlur = 20 ;
-        this.game.context.shadowColor = "#fff";
+        this.game.context.shadowColor = "#000";
 
         this.game.context.translate(this.pos.x | 0, this.pos.y | 0)
+        this.game.context.rotate(this.angle);
 
         this.game.context.fillStyle = this.color;
         this.game.context.beginPath();

@@ -180,6 +180,8 @@ export default class World {
 
     generateNew(w, h, boss) {
 
+        this.portalPos = null;
+
         console.log("Generating new map: " + w);
 
         this.updateCounter = 0;
@@ -291,12 +293,6 @@ export default class World {
 
             this.bgContext.restore();
         }
-
-        
-        
-
-        // this.context.fillStyle = `rgba(255,255,255,1)`;
-        // this.context.fillRect(this.portalPos.x-this.tileWidth/2,this.portalPos.y-this.tileWidth/2,this.tileWidth,this.tileWidth);
 
         if(boss) {
         } else {
@@ -472,20 +468,9 @@ export default class World {
             this.context.strokeRect(this.tileWidth,this.tileWidth,this.tileWidth*(this.currentMap.length-2), this.tileWidth*(this.currentMap[0].length-2));
             this.updateCounter = 0;
 
-            // this.context.clearRect(this.portalPos.x-this.tileWidth/2,this.portalPos.y-this.tileWidth/2,this.tileWidth,this.tileWidth);
-  
-            
-
-            // this.context.fillStyle = "rgba(255,0,255,1)"
-            // this.context.fillRect(this.portalPos.x-this.tileWidth/2,this.portalPos.y-this.tileWidth/2,this.tileWidth,this.tileWidth);
-
         } else if(this.portalPos && this.updateCounter % 2 === 0) {
             this.game.particles.push(new WorldParticle(this.game, new Vector(this.portalPos.x, this.portalPos.y), {r: Math.random()*30|0, g: 100 + Math.random()*150|0, b: 255}, 0.3+Math.random(),75 + Math.random()*25 | 0));
         }
-
-
-
-        
 
         this.game.context.drawImage(this.worldCanvas, 0, 0);
     }
