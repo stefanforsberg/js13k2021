@@ -38,7 +38,6 @@ class Particle extends GameObject {
 export default class Ship extends GameObject {
     constructor(game, life) {
 
-        console.log("creating new ship: " + life)
         super(game);
         this.angle = 0;
         this.left = false;

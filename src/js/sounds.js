@@ -70,6 +70,10 @@ export default class Sounds {
     }
 
     fade(i1,i2) {
+
+        if(this.game.debug) {
+            return;
+        }
         
         if(this.intervalID) {
             console.log("Already fading, clearing")

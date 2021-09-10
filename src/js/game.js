@@ -40,7 +40,7 @@ export default class Game {
 
         this.running = true;
 
-        this.debug = false;
+        this.debug = true;
 
         this.world = new World(this);
 
@@ -179,6 +179,9 @@ export default class Game {
     }
 
     updateFromPowerups() {
+
+        console.log("pre: " + this.ship.maxVelMagnitude)
+
         this.ship.maxVelMagnitude = this.powerup.powerUpsSettings.s.maxVelocity
         this.ship.pickupRadius = this.powerup.powerUpsSettings.s.pickupRadius;
         this.ship.bomb.size = this.powerup.powerUpsSettings.b.size
@@ -190,7 +193,9 @@ export default class Game {
         this.ship.invulCooldown = this.powerup.powerUpsSettings.s.shieldCooldown
         this.ship.invulPeriod = this.powerup.powerUpsSettings.s.shieldDuration
 
-        window.requestAnimationFrame((t) => this.draw(t));
+        console.log("post: " + this.ship.maxVelMagnitude)
+
+
     }
 
     endGame() {
@@ -198,11 +203,14 @@ export default class Game {
 
         this.levelsCompleted = 0;
 
+        
+
         this.hud.mineral = (this.hud.mineral + this.powerup.spent) / 2 | 0;
         this.hud.draw();
 
         this.ship.life = 5;
 
+        this.powerup.setBase();
         this.powerup.reset();
 
         this.startLevel({death: true});
@@ -334,6 +342,9 @@ export default class Game {
                     this.startTime = null;
 
                     this.updateFromPowerups();
+
+                    window.requestAnimationFrame((t) => this.draw(t));
+
                 } else {
                     this.pauseTime = window.performance.now();
                 }
