@@ -8,6 +8,7 @@ class Bullet extends GameObject {
         this.pos = pos;
         this.vel = velocity;
         this.life = 0;
+        this.angle = Math.atan((velocity.y/velocity.x)) - Math.PI/2;
 
      }
 
@@ -18,7 +19,7 @@ class Bullet extends GameObject {
         
         if(this.life <= 0) {
             this.removeable = true;
-        }
+        } 
         
         this.life--;
 
@@ -31,16 +32,24 @@ class Bullet extends GameObject {
         if(this.game.camera.outsideViewport(this.pos.x, this.pos.y)) { 
             this.removeable = true;
         }
-        
+         
     }   
      
     draw() {
         super.draw();
 
+        this.game.context.save();
+        this.game.context.translate(this.pos.x, this.pos.y);
+        this.game.context.rotate(this.angle);
         this.game.context.beginPath();
+        this.game.context.shadowBlur = 20;
+        this.game.context.shadowColor = this.color;
         this.game.context.fillStyle = this.color; 
-        this.game.context.arc(this.pos.x, this.pos.y, this.radius, 0, 2 * Math.PI);
+        this.game.context.ellipse(0, 0, this.radius, this.radius*4, 0, 0, 2 * Math.PI);
+        this.game.context.arc(0, 0, this.radius, 0, 2 * Math.PI);
         this.game.context.fill();
+        this.game.context.restore();
+
     }
 }
 
@@ -48,8 +57,10 @@ class PlayerBullet extends Bullet {
     constructor(game, pos, velocity, life) {
         super(game, pos, velocity);
 
-        this.color = "#FFF";
+        this.color = "#FEF1BA";
         this.radius = 8;
+
+        
 
         this.life = life;
      }
