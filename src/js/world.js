@@ -404,7 +404,7 @@ export default class World {
         }
         
         for(let i = 0; i < 10; i++) {
-            this.game.particles.push(new WorldParticle(this.game, pos, this.baseColor));
+            this.game.particles.push(new WorldParticle(this.game, new Vector(pos.x, pos.y), this.baseColor));
         }
     }
 

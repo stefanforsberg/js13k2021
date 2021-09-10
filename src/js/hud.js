@@ -1,7 +1,6 @@
 export default class Hud {
     constructor(game) {
         this.game = game;
-        this.e = document.getElementById("hud");
         this.worldElement = document.getElementById("world");
         this.worldListElement = document.getElementById("worldlist");
         this.mineral = 1000;
@@ -22,12 +21,6 @@ export default class Hud {
         } else {
             this.mineral++;
         }
-        
-        this.draw();
-    }
-
-    draw() {
-        this.e.innerHTML = `${this.mineral} minerals`
     }
 
     drawTitle(t) {

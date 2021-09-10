@@ -147,7 +147,7 @@ export default class Game {
 
         this.camera.setWorldSize(this.world.width, this.world.height)
 
-        this.targetZoom = 1200 + (this.canvas.width-1200)/2;
+        this.targetZoom = 1000 + (this.canvas.width-1200)*0.3;
         this.currentZoom = 30000;
         this.camera.zoomTo(this.currentZoom);
 
@@ -206,7 +206,6 @@ export default class Game {
         
 
         this.hud.mineral = (this.hud.mineral + this.powerup.spent) / 2 | 0;
-        this.hud.draw();
 
         this.ship.life = 5;
 

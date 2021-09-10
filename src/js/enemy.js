@@ -4,6 +4,42 @@ import {EnemyBullet} from "./bullet";
 import Item from "./items";
 import Timer from "./timer";
 
+class WorldParticle extends GameObject {
+    constructor(game, pos, color, alpha, size) {
+        super(game);
+        this.pos = pos;
+        this.vel = new Vector(-1+2*Math.random(),-1+2 *Math.random());
+        this.vel.scale(Math.random(), Math.random());
+        this.width = 5+Math.round(Math.random()*(size ?? 5));
+        this.height = 5+Math.round(Math.random()*(size ?? 5));
+        this.alpha = alpha ?? 1;
+
+        this.color = `${Math.random()*255|0},${Math.random()*255|0},${Math.random()*255|0}`
+
+    }
+
+    update() {
+        this.width += 0.4;
+        this.height += 0.4;
+        this.alpha -= 0.02;
+        this.pos.add(this.vel.x,this.vel.y);
+
+        if(this.width < 0 || this.height < 0 || this.alpha < 0) {
+            this.removeable = true;
+        }
+    }
+
+    draw() {
+        this.game.context.save();
+        this.game.context.translate(this.pos.x, this.pos.y);
+        this.game.context.rotate(Math.random());
+        this.game.context.fillStyle = `rgba(${this.color},${this.alpha})`; 
+        this.game.context.fillRect(-this.width/2, -this.height/2, this.width, this.height);
+        this.game.context.restore();
+
+    }
+}
+
 class Enemy extends GameObject {
     constructor(game) {
         super(game);
@@ -12,6 +48,11 @@ class Enemy extends GameObject {
     
     hit() {
         this.removeable = true;
+
+        for(let i = 0; i < 20; i++) {
+            console.log("adding")
+            this.game.particles.push(new WorldParticle(this.game, new Vector(this.pos.x, this.pos.y), this.color));
+        }
 
         this.game.items.push(new Item(this.game, new Vector(this.pos.x, this.pos.y)));
     }

@@ -81,7 +81,7 @@ export default class Powerup {
         const current = this.powerups.filter((p) => p.a).length;
         this.nextCost = current*current*0.5 | 0;
 
-        this.powerupcost.innerHTML = `Next upgrade ${this.nextCost} (inventory ${this.game.hud.mineral})`
+        this.powerupcost.innerHTML = `Next ${this.nextCost} 🌒 (inv ${this.game.hud.mineral} 🌒)`
     }
 
     reset() {
