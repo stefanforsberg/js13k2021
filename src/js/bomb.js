@@ -27,6 +27,8 @@ export default class Bomb extends GameObject {
 
         this.game.camera.shake(300);
 
+        this.game.sounds.sfx(4);
+
         
         this.game.timers.push(new Timer(this.cooldown, () => {this.canFire = true; this.bombing = false; this.game.hud.toggleBomb(); }));
 

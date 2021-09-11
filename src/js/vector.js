@@ -45,4 +45,11 @@ export default class Vector {
   normalize() {
     this.divide(this.magnitude());
   } 
+
+  static randomVector(sx, sy) {
+      const v = new Vector(-1+2*Math.random(), -1+2*Math.random());
+      v.normalize();
+      v.scale(sx,sy);
+      return v;
+  }
 }

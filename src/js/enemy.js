@@ -157,13 +157,6 @@ class StationaryEnemyRapid extends Enemy {
         this.first = true;
     }
 
-    randomVector() {
-        const v = new Vector(-1+2*Math.random(), -1+2*Math.random());
-        v.normalize();
-        v.scale(2,2);
-        return v;
-    }
-
     update() {
         
         super.update();
@@ -172,10 +165,10 @@ class StationaryEnemyRapid extends Enemy {
             this.canFire = false;
 
             this.game.timers.push(new Timer(this.coolDown, () => this.canFire = true));
-            this.game.timers.push(new Timer(100, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), this.randomVector())) ))
-            this.game.timers.push(new Timer(300, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), this.randomVector())) ))
-            this.game.timers.push(new Timer(500, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), this.randomVector())) ))
-            this.game.timers.push(new Timer(700, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), this.randomVector())) ))
+            this.game.timers.push(new Timer(100, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), Vector.randomVector())) ))
+            this.game.timers.push(new Timer(300, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), Vector.randomVector())) ))
+            this.game.timers.push(new Timer(500, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), Vector.randomVector())) ))
+            this.game.timers.push(new Timer(700, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), Vector.randomVector())) ))
         }
     }
 
@@ -256,8 +249,6 @@ class MovingEnemy extends Enemy {
         if(this.canFire && Math.random() > 0.98) {
             this.canFire = false;
             this.game.timers.push(new Timer(this.coolDown, () => this.canFire = true));
-
-            
 
             const v = new Vector(this.game.ship.pos.x - this.pos.x, this.game.ship.pos.y - this.pos.y);
             v.normalize();

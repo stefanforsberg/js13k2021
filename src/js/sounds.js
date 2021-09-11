@@ -1,5 +1,5 @@
 import CPlayer from "./music/player_small";
-import {song, sfxHit, sfxTel, title} from "./music/song";
+import {song, sfxHit, sfxTel, title,sfxBomb} from "./music/song";
 
 export default class Sounds {
     constructor(game) {
@@ -7,7 +7,7 @@ export default class Sounds {
         this.game = game;
         this.player = new CPlayer();
 
-        this.soundsLoading = [song, sfxHit, sfxTel, title]
+        this.soundsLoading = [song, sfxHit, sfxTel, title,sfxBomb]
         this.sounds = [];
         this.currentlyLoadingIndex = 0;
 

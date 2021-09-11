@@ -1,6 +1,7 @@
 export default class GameObject {
     constructor(game) {
         this.game = game;
+        this.ctx = this.game.context
     }
 
     draw() {

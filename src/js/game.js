@@ -40,7 +40,7 @@ export default class Game {
 
         this.running = true;
 
-        this.debug = true;
+        this.debug = false;
 
         this.world = new World(this);
 
@@ -115,7 +115,7 @@ export default class Game {
         const playerStartPos = this.boss ? {x: 500, y: 500} : this.world.getEmptyPos();
 
         if(this.boss) {
-            this.enemies.push(new Boss(this));
+            this.enemies.push(new Boss(this, this.levelsCompleted));
         } else {
             let monsterCount = ((ep, lc) => { 
                 if(ep < 200) return (2 + lc);
@@ -145,9 +145,11 @@ export default class Game {
         this.ship.pos.x = playerStartPos.x;
         this.ship.pos.y = playerStartPos.y; 
 
+        this.camera.shaking = false;
+
         this.camera.setWorldSize(this.world.width, this.world.height)
 
-        this.targetZoom = 1000 + (this.canvas.width-1200)*0.3;
+        this.targetZoom = 1000 + (this.canvas.width-1200)*0.4;
         this.currentZoom = 30000;
         this.camera.zoomTo(this.currentZoom);
 
@@ -284,9 +286,11 @@ export default class Game {
 
             this.world.draw();
 
-            this.ship.draw();
     
             this.enemies.revFor((e) => e.draw());
+
+            this.ship.draw();
+
 
             this.bullets.forEach((b) => {
                 b.draw();
