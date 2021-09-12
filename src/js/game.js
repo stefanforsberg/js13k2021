@@ -99,7 +99,7 @@ export default class Game {
         this.hud.addWorld(worldName, `rgba(${this.world.baseColor.r},${this.world.baseColor.g},${this.world.baseColor.b},1)`);
 
         if(t.title) {
-            this.hud.drawTitle(`Move foward with [W], turn with [A] and [D].<br> Fire gun with [SPACEBAR], bomb with [Q] and use shield with [F]<br>Collect minerals and use [TAB] to buy powerups.<br><br>[SPACEBAR] to begin.`)
+            this.hud.drawTitle(`Move forward with [W], turn with [A] and [D].<br> Fire gun with [SPACEBAR], bomb with [Q] and use shield with [F]<br>Collect minerals and use [TAB] to buy powerups.<br><br>[SPACEBAR] to begin.`)
         }
         else if(t.death) {
             this.hud.drawTitle(`That was not you purpose.<br>Half of resources lost.<br>Memory reset.<br><br>Next system is <span style="font-weight: bold; color: rgba(${this.world.baseColor.r},${this.world.baseColor.g},${this.world.baseColor.b},1)">${worldName}</span><br><br>[SPACEBAR] to begin.`)
