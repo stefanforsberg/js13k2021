@@ -30,8 +30,6 @@ export default class Powerup {
 
             document.querySelectorAll(".powerup").forEach(e => {
                 
-                    console.log("pw");
-                    
                     e.addEventListener("click", () => {
 
                         if(!e.classList.contains("active")) {
@@ -79,7 +77,7 @@ export default class Powerup {
 
     upgradeCost() {
         const current = this.powerups.filter((p) => p.a).length;
-        this.nextCost = current*current*0.5 | 0;
+        this.nextCost = Math.ceil((current*current*0.1)) + 1
 
         this.powerupcost.innerHTML = `Next ${this.nextCost} 🌒 (inv ${this.game.hud.mineral} 🌒)`
     }
@@ -96,6 +94,7 @@ export default class Powerup {
         this.powerups.push(...Array(5).fill().map(_ => {return {i:"🧲", d:"+pickup radius", a: false, f: (p) => p.s.pickupRadius+=20}}))
         this.powerups.push(...Array(5).fill().map(_ => {return {i:"🛡️", d:"+shield duration", a: false, f: (p) => p.s.shieldDuration+=100}}))
         this.powerups.push(...Array(5).fill().map(_ => {return {i:"🛡️", d:"+shield cooldown", a: false, f: (p) => p.s.shieldCooldown-=500}}))
+        this.powerups.push(...Array(2).fill().map(_ => {return {i:"💖", d:"Restore one life on teleport", a: false, f: (p) => p.s.teleportLife+=1}}))
         this.powerups.push({i:"🔫", d:"+aim with mouse", a: false, f: (p) => p.g.mouseAim=true});
 
         
@@ -107,7 +106,8 @@ export default class Powerup {
                 maxVelocity: 2,
                 pickupRadius: 50,
                 shieldDuration: 2000,
-                shieldCooldown: 5000
+                shieldCooldown: 5000,
+                teleportLife: 0
             },
             b: {
                 size: 1,

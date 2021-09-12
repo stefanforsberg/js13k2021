@@ -13,8 +13,6 @@ const Generator = {
 
     generateMap: function(w, h) {
 
-        console.log("generateMap: " + w);
-
         if(w) {
             this.worldWidth = w;
         }
@@ -181,8 +179,6 @@ export default class World {
     generateNew(w, h, boss) {
 
         this.portalPos = null;
-
-        console.log("Generating new map: " + w);
 
         this.updateCounter = 0;
         this.deg = Math.random()*360 | 0;
@@ -399,7 +395,7 @@ export default class World {
     }
 
     explodeTile(x, y, pos) {
-        if(Math.random() > 0.9) {
+        if(Math.random() > 0.85) {
             this.game.items.push(new Item(this.game, new Vector(x*this.tileWidth + this.tileWidth/2, y*this.tileWidth + this.tileWidth/2)))
         }
         
@@ -457,8 +453,6 @@ export default class World {
             }
         }
     }
-
-    
 
     draw() {
         this.updateCounter++;

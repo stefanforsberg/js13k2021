@@ -49,7 +49,7 @@ export default class Ship extends GameObject {
         this.height = 20;
         this.maxVelMagnitude = 1;
         this.pickupRadius = 100;
-        this.life = life ?? 5;
+        this.life = life ?? 10;
         this.radius = 20;
         
         this.invulCooldown = 5000;
@@ -140,7 +140,6 @@ export default class Ship extends GameObject {
         }
 
         if(this.bombing) {
-            console.log("fireing bomb")
             this.bomb.fire(this);
         }
 
@@ -201,15 +200,14 @@ export default class Ship extends GameObject {
             this.game.context.fillStyle = `#fcfbfe`;
             this.game.context.beginPath();
             this.game.context.arc(this.pos.x, this.pos.y, 30 , 0, 2 * Math.PI, false);
-            this.game.context.arc(this.pos.x, this.pos.y, 25 , 0, 2 * Math.PI, true);
+            this.game.context.arc(this.pos.x, this.pos.y, 30-this.life , 0, 2 * Math.PI, true);
             this.game.context.fill();
         } else {
-            
 
             this.game.context.fillStyle = `rgba(0,255,255,${0.8*this.life/5})`;
             this.game.context.beginPath();
             this.game.context.arc(this.pos.x, this.pos.y, 30 , 0, 2 * Math.PI, false);
-            this.game.context.arc(this.pos.x, this.pos.y, 25 , 0, 2 * Math.PI, true);
+            this.game.context.arc(this.pos.x, this.pos.y, 30-this.life , 0, 2 * Math.PI, true);
             this.game.context.fill();
             
         }

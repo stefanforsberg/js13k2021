@@ -50,7 +50,6 @@ class Enemy extends GameObject {
         this.removeable = true;
 
         for(let i = 0; i < 20; i++) {
-            console.log("adding")
             this.game.particles.push(new WorldParticle(this.game, new Vector(this.pos.x, this.pos.y), this.color));
         }
 
@@ -163,12 +162,11 @@ class StationaryEnemyRapid extends Enemy {
 
         if(this.canFire) {
             this.canFire = false;
-
             this.game.timers.push(new Timer(this.coolDown, () => this.canFire = true));
-            this.game.timers.push(new Timer(100, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), Vector.randomVector())) ))
-            this.game.timers.push(new Timer(300, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), Vector.randomVector())) ))
-            this.game.timers.push(new Timer(500, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), Vector.randomVector())) ))
-            this.game.timers.push(new Timer(700, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), Vector.randomVector())) ))
+            this.game.timers.push(new Timer(100, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), Vector.randomVector(2,2))) ))
+            this.game.timers.push(new Timer(300, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), Vector.randomVector(2,2))) ))
+            this.game.timers.push(new Timer(500, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), Vector.randomVector(2,2))) ))
+            this.game.timers.push(new Timer(700, () => this.game.enemyBullets.push(new EnemyBullet(this.game,new Vector(this.pos.x, this.pos.y), Vector.randomVector(2,2))) ))
         }
     }
 
@@ -272,5 +270,6 @@ export {
     Enemy, 
     StationaryEnemy,
     StationaryEnemyRapid,
+    StationaryEnemySeeking,
     MovingEnemy
 }

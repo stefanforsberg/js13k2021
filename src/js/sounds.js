@@ -76,7 +76,6 @@ export default class Sounds {
         }
         
         if(this.intervalID) {
-            console.log("Already fading, clearing")
             clearInterval(this.intervalID);
         }
 

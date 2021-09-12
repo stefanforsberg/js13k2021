@@ -68,7 +68,7 @@ export default class Boss extends GameObject {
 
                     this.game.timers.push(new Timer(4000, () => {
                         this.ip.b = undefined; 
-                        this.ip.c += this.i1 ? 50 : 25;
+                        this.ip.c += this.i2 ? 25 : 50;
                     }))
                 }
 
@@ -158,6 +158,11 @@ export default class Boss extends GameObject {
         if(this.life <= 0) {
             this.removeable = true;
             this.game.world.addPortal();
+            
+            for(var i = 0; i < 10; i++) {
+                this.game.items.push(new Item(this.game, new Vector(this.pos.x + Math.random()*30|0, this.pos.y  + Math.random()*30|0)))
+            }
+
             this.game.camera.shake(500);
         }
 
@@ -196,7 +201,6 @@ export default class Boss extends GameObject {
                     const y1 = this.game.ship.pos.y;
                     const x2 = this.ip.b.pos.x;
                     const y2 = this.ip.b.pos.y;
-                    console.log(x1+","+x2+","+y1+","+y2)
                     if(
                         x1 > x2 
                         && x1 < x2 + 325

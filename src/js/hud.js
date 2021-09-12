@@ -3,7 +3,7 @@ export default class Hud {
         this.game = game;
         this.worldElement = document.getElementById("world");
         this.worldListElement = document.getElementById("worldlist");
-        this.mineral = 1000;
+        this.mineral = 0;
         this.spentMineral = 0;
 
         this.title = document.getElementById("title");

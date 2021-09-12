@@ -80,7 +80,7 @@ export default class Game {
         this.running = false;
         this.queueRestart = false;
 
-        this.ship = new Ship(this, this.ship ? this.ship.life : 5);
+        this.ship = new Ship(this, this.ship ? this.ship.life : 10);
         
         this.bullets = [];
         this.enemyBullets = [];
@@ -130,12 +130,17 @@ export default class Game {
                 let pos = this.world.getEmptyPos();
                 
     
-                if(Math.random() > 0.95 - this.levelsCompleted/10) {
+                if(Math.random() > 0.95 - this.levelsCompleted/100) {
                     this.enemies.push(new Enemy.MovingEnemy(this, pos.x, pos.y));
-                }  else if(Math.random() > 0.8 - this.levelsCompleted/10) {
+                }  else if(Math.random() > 0.85 - this.levelsCompleted/100) {
                     this.enemies.push(new Enemy.StationaryEnemyRapid(this, pos.x, pos.y));
                 }  else {
-                    this.enemies.push(new Enemy.StationaryEnemy(this, pos.x, pos.y));
+                    
+                    if(Math.random() > 0.6) {
+                        this.enemies.push(new Enemy.StationaryEnemy(this, pos.x, pos.y));
+                    } else {
+                        this.enemies.push(new Enemy.StationaryEnemySeeking(this, pos.x, pos.y));
+                    }
                 }
             }
         }
@@ -182,8 +187,6 @@ export default class Game {
 
     updateFromPowerups() {
 
-        console.log("pre: " + this.ship.maxVelMagnitude)
-
         this.ship.maxVelMagnitude = this.powerup.powerUpsSettings.s.maxVelocity
         this.ship.pickupRadius = this.powerup.powerUpsSettings.s.pickupRadius;
         this.ship.bomb.size = this.powerup.powerUpsSettings.b.size
@@ -194,9 +197,11 @@ export default class Game {
         this.ship.gun.cooldown = this.powerup.powerUpsSettings.g.cooldown
         this.ship.invulCooldown = this.powerup.powerUpsSettings.s.shieldCooldown
         this.ship.invulPeriod = this.powerup.powerUpsSettings.s.shieldDuration
+        this.ship.life+= this.powerup.powerUpsSettings.s.teleportLife;
 
-        console.log("post: " + this.ship.maxVelMagnitude)
-
+        if(this.ship.life > 10) {
+            this.ship.life = 10;
+        }
 
     }
 
